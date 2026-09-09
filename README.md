@@ -32,13 +32,14 @@ Soovi korral lisa kohe lühikirjeldus:
 Plugin küsib ühe küsimuse korraga ja hoiab fookuse ühel tööolukorral.
 
 1. Kaardistab 8–12 sammu koos sisendite ja nende allikatega.
-2. Lisab igale AI-sobivale sammule nähtava esmahinnangu ning põhjendatud töökorralduse alternatiivid, mille saab lahti klikkida.
-3. Aitab valida, kas detailsemalt hinnata praeguse sammu AI-rolli või mõnd pakutud alternatiivi.
-4. Paneb kasutaja valima oodatud kasu ning kinnitama lihtsa lähtepunkti–siht mõõtmiskava.
-5. Hindab valitud lähenemise sisendit, kontrollitavust ja vea mõju ning lisab väikese kontrollitud katse.
-6. Küsib HTML-kaardi salvestamiseks või uuendamiseks täpset asukohta ning kirjutab faili alles sinu selgel nõusolekul.
+2. Lisab igale sammule nähtava esmahinnangu, põhjendatud töökorralduse alternatiivid ja nelja tee võrdluse: käsitsi AI-chat, lugemis- või tegevusõigusega connector ning deterministlik lahendus.
+3. Tõstab sammus esile sobivaima tee ning selgitab, millal skript, valem või reeglipõhine automaatika on AI-st usaldusväärsem.
+4. Aitab valida, kas detailsemalt hinnata soovitatud lahendusteed või mõnd pakutud töökorralduse alternatiivi.
+5. Paneb kasutaja valima oodatud kasu ning kinnitama lihtsa lähtepunkti–siht mõõtmiskava.
+6. Hindab valitud lähenemise sisendit, kontrollitavust ja vea mõju ning lisab väikese kontrollitud katse.
+7. Küsib HTML-kaardi salvestamiseks või uuendamiseks täpset asukohta ning kirjutab faili alles sinu selgel nõusolekul.
 
-Kaart sisaldab ainult struktureeritud töökaarti ja sammupõhiseid hinnanguid — mitte kogu vestluse transkripti. Esmahinnang ja võimalikud töökorralduse alternatiivid on nähtavad igal AI-sobival sammul; oodatud kasu, mõõtmiskava, detailne kvaliteedihinnang ja katse ilmuvad vaid siis, kui lähenemist on vestluses täpsustatud. See ei avane, üleslaadita ega lisata git'i automaatselt.
+Kaart sisaldab ainult struktureeritud töökaarti ja sammupõhiseid hinnanguid — mitte kogu vestluse transkripti. Esmahinnang ja lahendusvõrdlus on nähtavad igal sammul; oodatud kasu, mõõtmiskava, detailne kvaliteedihinnang ja katse ilmuvad vaid siis, kui lähenemist on vestluses täpsustatud. See ei avane, üleslaadita ega lisata git'i automaatselt.
 
 ## Jätka sama kaardiga
 

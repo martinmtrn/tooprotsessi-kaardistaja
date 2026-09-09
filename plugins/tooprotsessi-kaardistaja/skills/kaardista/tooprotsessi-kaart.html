@@ -47,6 +47,7 @@
       summary::after { content:"⌄"; color:var(--green); font-size:17px; line-height:1; }.summary-left { display:flex; align-items:center; gap:9px; min-width:0; }.summary-label { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
       details[open] summary { border-bottom:1px solid #e4e9e3; background:#f5f8f2; }.detail-body { padding:13px; }.detail-body > p { margin:0 0 10px; color:#56665d; font-size:11px; line-height:1.55; }
       dl { margin:0; }.detail-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:0 16px; }.detail-grid dt { margin-top:10px; }.detail-grid dd { margin:2px 0 0; color:#405148; font-size:10px; line-height:1.45; white-space:pre-wrap; }
+      .solution-details { margin-top:9px; border-color:#b7c8ad; background:#f8fbf5; }.solution-details[open] summary { background:#edf5e9; }.solution-badge { display:inline-block; padding:5px 7px; border-radius:2px; color:var(--green); background:var(--green-soft); font:500 8px ui-monospace,monospace; letter-spacing:.04em; text-transform:uppercase; white-space:nowrap; }.solution-badge.deterministic { color:#5b481e; background:#f4e8c8; }.solution-intro { margin:0 0 12px; color:#405148; font-size:11px; line-height:1.55; }.solution-options { display:grid; gap:8px; }.solution-option { padding:11px; border-left:2px solid #b7c8ad; background:#fff; }.solution-option.recommended { border-left-width:4px; border-color:var(--green); background:#f1f7ed; }.solution-option.not-recommended { border-color:#c9d0cc; background:#fafbfa; }.solution-option h4 { margin:0 0 5px; color:#304138; font-size:11px; line-height:1.4; }.solution-option p { margin:0 0 8px; color:#56665d; font-size:11px; line-height:1.5; white-space:pre-wrap; }.option-head { display:flex; align-items:flex-start; justify-content:space-between; gap:9px; }.option-status { flex:0 0 auto; color:#617068; font:500 8px/1.2 ui-monospace,monospace; letter-spacing:.05em; text-transform:uppercase; }.solution-option.recommended .option-status { color:var(--green); }.solution-option.not-recommended .option-status { color:#68776d; }
       .change-ideas { margin-top:15px; padding-top:13px; border-top:1px solid #e4e9e3; }.change-ideas-heading { margin:0 0 9px; color:var(--green); font:500 9px/1.35 ui-monospace,monospace; letter-spacing:.07em; text-transform:uppercase; }.change-idea { margin-top:8px; padding:11px; border-left:2px solid #8eae7c; background:#f4f7f1; }.change-idea:first-of-type { margin-top:0; }.change-idea h4 { margin:0 0 5px; color:#304138; font-size:11px; line-height:1.4; }.change-idea p { margin:0 0 8px; color:#56665d; font-size:11px; line-height:1.5; white-space:pre-wrap; }
       .benefit-details { border-color:#b7c8ad; background:#f8fbf5; }.benefit-details[open] summary { background:#edf5e9; }.benefit-badge { display:inline-block; padding:5px 7px; border-radius:2px; color:var(--green); background:var(--green-soft); font:500 8px ui-monospace,monospace; letter-spacing:.04em; text-transform:uppercase; white-space:nowrap; }
       .quality-details { border-color:#d3dfca; background:#f8fbf5; }.experiment-details { border-color:#94b685; background:#eaf4e5; }.experiment-details[open] summary { background:#e2f0dc; }
@@ -67,7 +68,7 @@
     <script id="map-data" type="application/json">__TOOPROTSESSI_KAART_DATA__</script>
     <script>
       (() => {
-        const fallback = { schemaVersion:4, title:"Tööprotsessi AI-kaart", steps:[], notice:"Kaardi andmeid ei õnnestunud lugeda." };
+        const fallback = { schemaVersion:5, title:"Tööprotsessi AI-kaart", steps:[], notice:"Kaardi andmeid ei õnnestunud lugeda." };
         let source = fallback;
         try { source = JSON.parse(document.getElementById("map-data").textContent); } catch (error) { console.error("Tööprotsessi kaardi andmete lugemine ebaõnnestus.", error); }
         const value = (input, fallbackText="Täpsustamisel") => input === undefined || input === null || String(input).trim() === "" ? fallbackText : String(input);
@@ -76,6 +77,14 @@
         const element = (tag, className, text) => { const node = document.createElement(tag); if (className) node.className = className; if (text !== undefined) node.textContent = text; return node; };
         const appendDetail = (parent, label, text) => parent.append(element("dt", "", label), element("dd", "", value(text)));
         const suitability = { kohe:["Saab kohe proovida", ""], lugemine:["Vajab lugemisligipääsu", "read"], tegevusoigus:["Vajab tegevusõigust", "action"], ei_sobi:["Ei ole praegu AI-kandidaat", "no"] };
+        const implementationKind = {
+          ai_chat:"AI-chat käsitsi",
+          connector_read:"Connector: lugemisõigus",
+          connector_write:"Connector: tegevusõigus",
+          deterministic:"Deterministlik lahendus"
+        };
+        const implementationStatus = { soovitatud:"Soovitatud", voimalik:"Võimalik", ei_soovitata:"Ei soovitata", ei_kohaldu:"Ei kohaldu" };
+        const implementationOrder = ["ai_chat", "connector_read", "connector_write", "deterministic"];
         const benefitCategory = { kvaliteet:"Kvaliteet ja järjepidevus", aeg_toomaht:"Aja- või töömahu kokkuhoid", kulud:"Otseste kulude kokkuhoid", risk_umbertoe:"Vigade, ümbertöö või riski vähendamine", teenus:"Teenuse kiirus või kliendikogemus" };
         const qualityClass = { "Hea esimene AI-katse":"", "Sobib kontrollitud abiks":"checked", "Vajab paremat sisendit":"improve", "Ei sobi praegu selleks otsuseks":"stop" };
         const legacyOpportunity = (stepNumber) => (Array.isArray(source.opportunities) ? source.opportunities.find((item) => Number(item.step) === Number(stepNumber)) : null);
@@ -88,7 +97,7 @@
         if (dateValue) { const date = new Date(dateValue); document.getElementById("stamp").textContent = Number.isNaN(date.getTime()) ? String(dateValue) : `Viimati uuendatud ${date.toLocaleString("et-EE")}`; }
         document.title = `${value(source.title)} · Tööprotsessi kaart`;
         document.getElementById("map-title").textContent = value(source.title, "Tööprotsessi AI-kaart");
-        document.getElementById("lede").textContent = "Igal sammul on esmane AI-sobivuse hinnang. Ava samm, et näha põhjendust ja võimalikke töökorralduse alternatiive; pärast detailset arutelu kuvatakse ka oodatud kasu, mõõtmiskava, kvaliteedihinnang ja katse.";
+        document.getElementById("lede").textContent = "Igal sammul on esmane AI-sobivuse hinnang ja lahendusvõrdlus: käsitsi AI-chat, lugemis- või tegevusõigusega connector ning deterministlik alternatiiv. Ava samm, et näha soovitust, põhjendust ja võimalikke töökorralduse alternatiive; pärast detailset arutelu kuvatakse ka oodatud kasu, mõõtmiskava, kvaliteedihinnang ja katse.";
         document.getElementById("notice").textContent = value(source.notice, "Kaart põhineb kasutaja kirjeldusel; inimene kontrollib tulemust.");
         document.getElementById("step-count").textContent = `${steps.length} kaardistatud sammu`;
         const timeline = document.getElementById("timeline");
@@ -112,6 +121,8 @@
           const output = element("div", "data-item"); output.append(element("b", "", "Väljund"), document.createTextNode(value(step.informationOutput)));
           dataGrid.append(input, output); card.append(dataGrid);
           card.append(renderAssessment(assessment, label, className));
+          const implementations = normalizeImplementationOptions(assessment);
+          if (implementations) card.append(renderImplementationOptions(assessment, implementations));
           if (hasBenefit(step.benefitHypothesis)) card.append(renderBenefit(step.benefitHypothesis));
           if (hasQuality(step.qualityAssessment)) card.append(renderQuality(step.qualityAssessment));
           if (hasExperiment(step.experiment)) card.append(renderExperiment(step.experiment));
@@ -134,6 +145,47 @@
           const ideas = assessment.suitability === "ei_sobi" ? [] : Array.isArray(assessment.processChangeIdeas) ? assessment.processChangeIdeas.filter((idea) => idea && typeof idea === "object" && (hasText(idea.title) || hasText(idea.proposedFlow) || hasText(idea.benefit) || hasText(idea.conditions))) : [];
           if (ideas.length) body.append(renderProcessChangeIdeas(ideas));
           return details;
+        }
+
+        function normalizeImplementationOptions(assessment) {
+          if (!Array.isArray(assessment.implementationOptions)) return null;
+          const byKind = new Map(assessment.implementationOptions.filter((option) => option && typeof option === "object" && implementationOrder.includes(option.kind)).map((option) => [option.kind, option]));
+          const recommended = implementationOrder.includes(assessment.recommendedApproach) ? assessment.recommendedApproach : null;
+          return implementationOrder.map((kind) => {
+            const option = { kind, status:"ei_kohaldu", rationale:"Selle variandi hinnang vajab täpsustamist.", flow:"Täpsustada.", requirements:"Täpsustada.", humanCheck:"Inimene otsustab järgmise sammu.", constraint:"Täpsustada.", ...byKind.get(kind) };
+            if (kind === recommended) return { ...option, status:"soovitatud" };
+            return option.status === "soovitatud" ? { ...option, status:"voimalik" } : option;
+          });
+        }
+
+        function renderImplementationOptions(assessment, options) {
+          const recommended = implementationOrder.includes(assessment.recommendedApproach) ? assessment.recommendedApproach : null;
+          const recommendedOption = options.find((option) => option.kind === recommended);
+          const details = element("details", "solution-details");
+          const summary = element("summary");
+          const left = element("span", "summary-left");
+          const label = recommendedOption ? implementationKind[recommended] : "Soovitatud tee puudub";
+          const badgeText = recommended === "deterministic" ? "AI asemel mõistlikum" : recommendedOption ? "Soovitatud" : "Hinnata uuesti";
+          left.append(element("span", `solution-badge${recommended === "deterministic" ? " deterministic" : ""}`, badgeText), element("span", "summary-label", `Soovitatud lahendustee: ${label}`));
+          summary.append(left); details.append(summary);
+          const body = element("div", "detail-body");
+          if (recommendedOption) body.append(element("p", "solution-intro", value(recommendedOption.rationale)));
+          else body.append(element("p", "solution-intro", "Selle sammu lahendustee soovitus vajab täpsustamist."));
+          const list = element("div", "solution-options");
+          options.forEach((option) => {
+            const isRecommended = option.kind === recommended;
+            const card = element("article", `solution-option${isRecommended ? " recommended" : ""}${option.status === "ei_soovitata" || option.status === "ei_kohaldu" ? " not-recommended" : ""}`);
+            const head = element("div", "option-head");
+            const title = element("h4", "", implementationKind[option.kind]);
+            head.append(title, element("span", "option-status", implementationStatus[option.status] || value(option.status)));
+            card.append(head);
+            if (option.kind === "deterministic" && hasText(option.technology)) card.append(element("p", "", `Näide: ${option.technology}`));
+            if (hasText(option.rationale)) card.append(element("p", "", option.rationale));
+            const optionDetails = element("dl", "detail-grid");
+            [["TÖÖVOOG",option.flow],["ÕIGUSED JA EELDUSED",option.requirements],["INIMESE KONTROLL",option.humanCheck],["PRAKTILINE PIIRANG",option.constraint]].filter(([,fieldValue]) => hasText(fieldValue)).forEach(([detailLabel,fieldValue]) => appendDetail(optionDetails,detailLabel,fieldValue));
+            card.append(optionDetails); list.append(card);
+          });
+          body.append(list); details.append(body); return details;
         }
 
         function renderProcessChangeIdeas(ideas) {

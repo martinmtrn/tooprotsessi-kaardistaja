@@ -1,5 +1,11 @@
 # Muudatuste ajalugu
 
+## 0.5.0 — 2026-09-09
+
+- Iga sammu detailvaates on nüüd soovitatud lahendustee ja võrreldavad AI-chat, read-connector, write-connector ning deterministlik alternatiiv.
+- Deterministliku soovituse korral näitab kaart selgelt märget „AI asemel mõistlikum” ning sobivat tehnoloogianäidet.
+- V4-kaardid jäävad loetavaks; nelja tee võrdlus lisatakse alles järgmise kinnitatud uuendusega V5 vormingus.
+
 ## 0.4.0 — 2026-09-09
 
 - Detailhinnangus valib kasutaja nüüd AI kasutamise peamise ja valikulise teisejärgulise kasu.
