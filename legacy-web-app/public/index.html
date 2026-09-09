@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="et">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Kaardista üks tööolukord ja leia esimene realistlik AI-katse." />
+    <title>Minu tööteekonna AI-kaart</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="./" aria-label="Alusta uut tööteekonna kaarti"><span class="brand-mark">↗</span> Minu tööteekond</a>
+        <div id="session-note" class="session-note"><span></span> Seanssi ei salvestata</div>
+      </header>
+
+      <section id="welcome" class="welcome-layout">
+        <div class="intro-copy">
+          <p class="eyebrow">AI-KOOLITUSE HARJUTUS · 30–45 MIN</p>
+          <h1>Leia oma tööst <em>üks koht,</em> kus AI võiks päriselt aidata.</h1>
+          <p class="lede">Kirjelda üht sagedast tööolukorda. Kaardistame kõigepealt, mis selles päriselt juhtub — alles siis vaatame, kas ja kuidas AI võiks abiks olla.</p>
+          <div class="what-you-get">
+            <div><b>1</b><span>Selge tööteekond<br /><small>8–12 lihtsat sammu</small></span></div>
+            <div><b>2</b><span>AI võimaluste kaart<br /><small>sh ligipääsuvajadused</small></span></div>
+            <div><b>3</b><span>Üks järgmine katse<br /><small>mida saad päriselt proovida</small></span></div>
+          </div>
+        </div>
+
+        <form id="start-form" class="start-card">
+          <div class="card-head"><span class="step-number">01</span><div><h2>Alusta tööolukorrast</h2><p>Vali üks korduv olukord, mitte kogu oma ametikoht.</p></div></div>
+          <label for="journey-title">Mis tööolukorda kaardistad?</label>
+          <input id="journey-title" name="title" maxlength="120" placeholder="Näiteks: kliendi päringule vastamine" required />
+          <div class="input-label-row"><label for="source-text">Kleebi transkript või lühikirjeldus</label><span>või lisa tekstifail</span></div>
+          <textarea id="source-text" name="source" rows="8" maxlength="24000" placeholder="Kirjelda, kuidas see töö tavaliselt algab, mida sina ja teised selle käigus teete ning millal see lõpeb. Võid lisada olemasoleva transkripti."></textarea>
+          <label class="file-picker" for="file-upload"><input id="file-upload" type="file" accept=".txt,.md,.csv,text/plain,text/markdown,text/csv" /><span>＋</span> Lisa tekstifail</label>
+          <div class="privacy-box">
+            <label class="check-row"><input id="local-only" type="checkbox" checked /><span>Kasutan kohalikku režiimi — tekst jääb sellesse brauserisse ja seda ei saadeta API-sse.</span></label>
+            <label class="check-row"><input id="data-consent" type="checkbox" required /><span>Ma ei sisesta paroole, isikukoode ega muud ebavajalikku tundlikku teavet.</span></label>
+            <p id="data-note">Kohalik režiim kasutab juhitud kaardistamist sinu seadmes. AI-vestluse saab soovi korral sisse lülitada, eemaldades linnukese.</p>
+          </div>
+          <button class="primary-button" type="submit"><span>Kaardista tööteekond</span><span aria-hidden="true">→</span></button>
+        </form>
+      </section>
+
+      <section id="workspace" class="workspace hidden" aria-live="polite">
+        <aside class="journey-panel">
+          <div class="panel-heading"><p class="eyebrow">SINU TÖÖTEEKOND</p><h2 id="journey-name">Tööolukord</h2><p id="journey-status" class="status-text">Kuulan ja täpsustan</p></div>
+          <ol id="steps-list" class="steps-list"><li class="empty-steps">Sammud ilmuvad siia vestluse käigus.</li></ol>
+          <div class="panel-foot"><button id="reset-button" class="text-button">Alusta uut kaarti</button></div>
+        </aside>
+        <section class="conversation-panel">
+          <div id="chat-log" class="chat-log"></div>
+          <div id="action-area" class="action-area"></div>
+          <form id="message-form" class="message-form">
+            <label class="sr-only" for="message-input">Sinu vastus</label>
+            <textarea id="message-input" rows="2" maxlength="6000" placeholder="Vasta küsimusele oma sõnadega…" required></textarea>
+            <button id="send-button" class="send-button" type="submit" aria-label="Saada vastus">↑</button>
+          </form>
+        </section>
+        <aside id="insight-panel" class="insight-panel">
+          <div class="panel-heading"><p class="eyebrow">AI-VÕIMALUSTE KAART</p><h2>Veel mitte</h2><p class="status-text">Kinnitame esmalt tööteekonna.</p></div>
+          <div id="opportunities-list" class="opportunities-list"><p class="muted">AI võimalusi vaatame alles siis, kui oled tööteekonna üle kontrollinud.</p></div>
+        </aside>
+      </section>
+    </main>
+    <template id="assistant-message-template"><article class="message assistant"><div class="avatar">AI</div><div class="bubble"></div></article></template>
+    <template id="user-message-template"><article class="message user"><div class="bubble"></div></article></template>
+    <script type="module" src="app.js"></script>
+  </body>
+</html>

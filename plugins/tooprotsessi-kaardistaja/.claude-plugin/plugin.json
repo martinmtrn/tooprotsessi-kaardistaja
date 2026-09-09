@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "tooprotsessi-kaardistaja",
+  "displayName": "Tööprotsessi kaardistaja",
+  "version": "0.1.0",
+  "description": "Eestikeelne juhendatud tööprotsessi kaart, AI-võimaluste hindamine ja väike kontrollitud katse.",
+  "author": {
+    "name": "martinmtrn"
+  },
+  "homepage": "https://github.com/martinmtrn/tooprotsessi-kaardistaja",
+  "repository": "https://github.com/martinmtrn/tooprotsessi-kaardistaja",
+  "license": "MIT",
+  "keywords": ["eesti", "tööprotsess", "ai-koolitus", "process-mapping"]
+}
