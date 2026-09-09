@@ -1,7 +1,8 @@
 # Tööprotsessi kaardistaja Claude Code'ile
 
 Eestikeelne Claude Code'i plugin, mis aitab kaardistada ühe päris tööolukorra,
-valida realistliku AI-katse ning salvestada tulemuse iseseisva HTML-kaardina.
+hinnata AI-sobivust igas protsessisammus ning salvestada tulemuse iseseisva
+HTML-kaardina.
 See kasutab sinu olemasolevat Claude Code'i seanssi: plugin ei vaja API-võtit,
 ei käivita serverit ega tee võrgupäringuid.
 
@@ -31,14 +32,22 @@ Soovi korral lisa kohe lühikirjeldus:
 Plugin küsib ühe küsimuse korraga ja hoiab fookuse ühel tööolukorral.
 
 1. Kaardistab 8–12 sammu koos sisendite ja nende allikatega.
-2. Palub kaardi kinnitada ning pakub 2–4 AI-võimalust.
-3. Hindab valitud võimaluse sisendit, kontrollitavust ja vea mõju.
-4. Sõnastab väikese kontrollitud AI-katse.
-5. Küsib HTML-kaardi salvestamiseks täpset asukohta ning kirjutab faili alles sinu selgel nõusolekul.
+2. Lisab igale sammule nähtava AI-sobivuse esmahinnangu, mille saab lahti klikkida.
+3. Hindab valitud sammu sisendit, kontrollitavust ja vea mõju.
+4. Lisab sellele sammule lahtiklikitava detailse kvaliteedihinnangu ja väikese kontrollitud katse.
+5. Küsib HTML-kaardi salvestamiseks või uuendamiseks täpset asukohta ning kirjutab faili alles sinu selgel nõusolekul.
 
-Kaart sisaldab ainult struktureeritud töökaarti, võimalusi, kvaliteedihinnangut
-ja katset — mitte kogu vestluse transkripti. See ei avane, üleslaadita ega lisata
-git'i automaatselt.
+Kaart sisaldab ainult struktureeritud töökaarti ja sammupõhiseid hinnanguid — mitte kogu vestluse transkripti. Esmahinnang on nähtav igal sammul; detailne kvaliteedihinnang ja katse ilmuvad vaid siis, kui seda sammu on vestluses täpsustatud. See ei avane, üleslaadita ega lisata git'i automaatselt.
+
+## Jätka sama kaardiga
+
+Uues Claude Code'i vestluses anna pluginile olemasoleva kaardi absoluutne tee:
+
+```text
+/tooprotsessi-kaardistaja:kaardista /täistee/minu-tooprotsessi-kaart.html
+```
+
+Plugin loeb kaardilt olemasoleva struktureeritud seisu, küsib, millist järgmist sammu soovid detailsemalt arendada, ning säilitab varasemad hinnangud. Sama HTML-fail kirjutatakse üle ainult pärast sinu kinnitust.
 
 ## Privaatsus ja turvalisus
 

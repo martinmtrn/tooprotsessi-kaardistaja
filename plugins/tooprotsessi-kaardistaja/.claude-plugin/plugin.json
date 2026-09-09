@@ -2,8 +2,8 @@
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "tooprotsessi-kaardistaja",
   "displayName": "Tööprotsessi kaardistaja",
-  "version": "0.1.0",
-  "description": "Eestikeelne juhendatud tööprotsessi kaart, AI-võimaluste hindamine ja väike kontrollitud katse.",
+  "version": "0.2.0",
+  "description": "Eestikeelne tööprotsessi kaart, kus igal sammul on AI-sobivuse hinnang ning klõpsatav detailne katseplaan.",
   "author": {
     "name": "martinmtrn"
   },

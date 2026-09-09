@@ -6,160 +6,154 @@
     <meta name="description" content="Tööprotsessi AI-kaart" />
     <title>Tööprotsessi AI-kaart</title>
     <style>
-      :root { --ink:#17231f; --muted:#617068; --line:#d9dfd9; --paper:#f8f8f4; --panel:#fffefa; --green:#165c42; --sage:#dce9d5; --orange:#e36d39; }
+      :root { --ink:#17231f; --muted:#617068; --line:#d9dfd9; --paper:#f8f8f4; --card:#fffefa; --green:#165c42; --green-soft:#dce9d5; --gold:#79572b; --gold-soft:#f5ead0; --orange:#874127; --orange-soft:#f8dfd3; --grey:#647069; --grey-soft:#e9edeb; }
       * { box-sizing:border-box; }
       body { margin:0; color:var(--ink); background:radial-gradient(circle at 7% 0%,#e6eee0 0,transparent 32rem),var(--paper); font-family:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
-      .shell { width:min(1440px,calc(100% - 48px)); margin:0 auto; }
+      .shell { width:min(1060px,calc(100% - 40px)); margin:0 auto; padding-bottom:64px; }
       header { display:flex; align-items:center; justify-content:space-between; gap:24px; min-height:92px; border-bottom:1px solid var(--line); }
       .brand { display:flex; align-items:center; gap:10px; font-size:15px; font-weight:800; letter-spacing:-.03em; }
       .brand-mark { display:grid; place-items:center; width:28px; height:28px; border-radius:9px 9px 9px 2px; color:#fff; background:var(--green); font:500 12px ui-monospace,monospace; }
       .stamp { color:var(--muted); font-size:12px; font-weight:700; text-align:right; }
-      .layout { display:grid; grid-template-columns:minmax(245px,.75fr) minmax(340px,1.35fr) minmax(290px,.9fr); min-height:calc(100vh - 92px); }
-      aside,main { min-width:0; padding:38px 26px; }
-      .journey { background:#eef2e8; border-right:1px solid var(--line); }
-      main { background:var(--panel); border-right:1px solid var(--line); }
-      .insights { background:#fbfbf8; }
-      .eyebrow { margin:0 0 11px; color:var(--green); font:500 10px/1.1 ui-monospace,monospace; letter-spacing:.1em; }
+      .hero { padding:50px 0 34px; }
+      .eyebrow { margin:0 0 12px; color:var(--green); font:500 10px/1.1 ui-monospace,monospace; letter-spacing:.1em; }
       h1,h2,h3,p { margin-top:0; }
-      h1 { margin-bottom:6px; font:700 clamp(29px,4vw,48px)/1 Georgia,"Times New Roman",serif; letter-spacing:-.045em; }
-      h2 { margin:0 0 6px; font:700 21px/1.1 Georgia,"Times New Roman",serif; letter-spacing:-.04em; }
-      h3 { margin:0 0 6px; font-size:13px; line-height:1.35; letter-spacing:-.02em; }
-      .intro,.status,.notice,.empty { color:var(--muted); font-size:12px; line-height:1.55; }
-      .notice { margin:25px 0 29px; padding:12px 14px; border-left:3px solid #8eae7c; background:#f1f4ed; }
-      .section-heading { padding-bottom:19px; margin-bottom:19px; border-bottom:1px solid var(--line); }
-      .steps { margin:0; padding:0; list-style:none; counter-reset:step; }
-      .step { position:relative; padding:0 0 20px 34px; color:#304138; font-size:12px; line-height:1.5; counter-increment:step; }
-      .step::before { content:counter(step); position:absolute; z-index:1; top:0; left:0; display:grid; place-items:center; width:21px; height:21px; border:1px solid #cbdac1; border-radius:50%; color:var(--green); background:#fff; font:500 9px ui-monospace,monospace; }
-      .step:not(:last-child)::after { content:""; position:absolute; left:10px; top:22px; width:1px; height:calc(100% - 7px); background:#b7c8ad; }
-      .actor { display:block; margin-top:3px; color:#68776d; font-size:10px; }
-      .source { margin-top:9px; padding:7px 8px; border-left:2px solid #b7c8ad; background:rgba(255,255,255,.55); color:#405148; font-size:10px; line-height:1.4; }
-      .source b,dt { display:block; margin-bottom:3px; color:#6a7a70; font:500 8px ui-monospace,monospace; letter-spacing:.05em; text-transform:uppercase; }
-      .output { margin:7px 0 0; color:#56665d; font-size:10px; }
-      .opportunities { display:grid; gap:12px; }
-      .opportunity,.quality-card,.experiment-card { padding:15px; border:1px solid #dbe1d9; border-radius:4px; background:#fff; }
-      .badge,.quality-badge { display:inline-block; padding:4px 6px; margin-bottom:9px; border-radius:2px; color:var(--green); background:#e4efe0; font:500 8px ui-monospace,monospace; letter-spacing:.04em; text-transform:uppercase; }
-      .badge.read,.quality-badge.checked { color:#79572b; background:#f5ead0; }
-      .badge.action,.quality-badge.improve { color:#874127; background:#f8dfd3; }
-      .badge.no,.quality-badge.stop { color:#647069; background:#e9edeb; }
-      .opportunity p,.quality-card > p { margin-bottom:11px; color:#56665d; font-size:11px; line-height:1.5; }
-      dl { margin:0; }
-      dt { margin-top:9px; }
-      dd { margin:2px 0 0; color:#405148; font-size:10px; line-height:1.45; white-space:pre-wrap; }
-      .selected { margin:0 0 13px; padding:10px 12px; border:1px solid #cbdac1; background:#f3f7ee; color:#405148; font-size:11px; line-height:1.45; }
-      .selected strong { color:var(--green); }
-      .quality-card { margin-bottom:17px; background:#f8fbf5; border-color:#d3dfca; }
-      .experiment-card { border-color:#94b685; background:#eaf4e5; }
-      .experiment-card h3 { color:var(--green); font-size:15px; }
-      .footer-note { margin-top:24px; color:var(--muted); font-size:10px; line-height:1.5; }
-      @media (max-width:1050px) { .layout { grid-template-columns:220px minmax(0,1fr) 275px; } aside,main { padding:30px 19px; } }
-      @media (max-width:760px) { .shell { width:min(100% - 28px,620px); } header { min-height:70px; } .stamp { font-size:10px; } .layout { display:block; } aside,main { border-right:0; border-bottom:1px solid var(--line); padding:28px 21px; } }
+      h1 { max-width:790px; margin-bottom:12px; font:700 clamp(34px,5vw,58px)/.98 Georgia,"Times New Roman",serif; letter-spacing:-.05em; }
+      h2 { margin:0; font:700 20px/1.1 Georgia,"Times New Roman",serif; letter-spacing:-.035em; }
+      h3 { margin:0; font-size:14px; line-height:1.35; letter-spacing:-.02em; }
+      .lede,.notice,.empty { color:var(--muted); font-size:13px; line-height:1.6; }
+      .notice { margin:24px 0 0; padding:12px 15px; border-left:3px solid #8eae7c; background:#f1f4ed; }
+      .legend { display:flex; flex-wrap:wrap; gap:8px 14px; padding:16px 0 22px; border-bottom:1px solid var(--line); color:var(--muted); font-size:11px; }
+      .legend span { display:flex; align-items:center; gap:6px; }
+      .dot { width:9px; height:9px; border-radius:50%; background:var(--green); }
+      .dot.read { background:#b58632; }.dot.action { background:#c56745; }.dot.no { background:#84908a; }
+      .section-heading { display:flex; justify-content:space-between; align-items:end; gap:16px; padding:30px 0 20px; }
+      .count { color:var(--muted); font-size:11px; font-weight:700; white-space:nowrap; }
+      .timeline { margin:0; padding:0; list-style:none; }
+      .step { position:relative; display:grid; grid-template-columns:48px minmax(0,1fr); gap:18px; padding-bottom:18px; }
+      .step:not(:last-child)::before { content:""; position:absolute; left:22px; top:46px; bottom:-2px; width:2px; background:#b7c8ad; }
+      .node { position:relative; z-index:1; display:grid; place-items:center; width:46px; height:46px; border:1px solid #cbdac1; border-radius:50%; color:var(--green); background:#fff; font:500 12px ui-monospace,monospace; }
+      .step-card { padding:19px; border:1px solid #dbe1d9; border-radius:5px; background:var(--card); box-shadow:0 10px 30px rgba(26,47,37,.05); }
+      .step-head { display:flex; justify-content:space-between; align-items:flex-start; gap:14px; }
+      .step-meta { margin:5px 0 14px; color:#68776d; font-size:11px; line-height:1.45; }
+      .data-grid { display:grid; grid-template-columns:1fr 1fr; gap:9px; margin:0 0 15px; }
+      .data-item { padding:9px 10px; border-left:2px solid #b7c8ad; background:#f4f7f1; color:#405148; font-size:11px; line-height:1.45; }
+      .data-item b,dt { display:block; margin-bottom:3px; color:#6a7a70; font:500 8px ui-monospace,monospace; letter-spacing:.05em; text-transform:uppercase; }
+      .badge { display:inline-block; padding:5px 7px; border-radius:2px; color:var(--green); background:#e4efe0; font:500 8px ui-monospace,monospace; letter-spacing:.04em; text-transform:uppercase; white-space:nowrap; }
+      .badge.read,.quality-badge.checked { color:var(--gold); background:var(--gold-soft); }.badge.action,.quality-badge.improve { color:var(--orange); background:var(--orange-soft); }.badge.no,.quality-badge.stop { color:var(--grey); background:var(--grey-soft); }
+      details { overflow:hidden; border:1px solid #dbe1d9; border-radius:4px; background:#fff; }
+      details + details { margin-top:9px; }
+      summary { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 13px; cursor:pointer; list-style:none; color:#304138; font-size:12px; font-weight:800; }
+      summary::-webkit-details-marker { display:none; }
+      summary::after { content:"⌄"; color:var(--green); font-size:17px; line-height:1; }.summary-left { display:flex; align-items:center; gap:9px; min-width:0; }.summary-label { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+      details[open] summary { border-bottom:1px solid #e4e9e3; background:#f5f8f2; }.detail-body { padding:13px; }.detail-body > p { margin:0 0 10px; color:#56665d; font-size:11px; line-height:1.55; }
+      dl { margin:0; }.detail-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:0 16px; }.detail-grid dt { margin-top:10px; }.detail-grid dd { margin:2px 0 0; color:#405148; font-size:10px; line-height:1.45; white-space:pre-wrap; }
+      .quality-details { border-color:#d3dfca; background:#f8fbf5; }.experiment-details { border-color:#94b685; background:#eaf4e5; }.experiment-details[open] summary { background:#e2f0dc; }
+      .footer-note { margin:28px 0 0 66px; color:var(--muted); font-size:10px; line-height:1.5; }
+      @media (max-width:650px) { .shell { width:min(100% - 28px,620px); }.hero { padding-top:38px; }header { min-height:70px; }.stamp { font-size:10px; }.step { grid-template-columns:37px minmax(0,1fr); gap:11px; }.node { width:37px; height:37px; font-size:10px; }.step:not(:last-child)::before { left:18px; top:38px; }.step-card { padding:15px; }.step-head { display:block; }.step-head .badge { margin-top:9px; }.data-grid,.detail-grid { grid-template-columns:1fr; }.footer-note { margin-left:48px; } }
     </style>
   </head>
   <body>
     <div class="shell">
       <header><div class="brand"><span class="brand-mark">↗</span><span>Tööprotsessi kaart</span></div><div id="stamp" class="stamp"></div></header>
-      <div class="layout">
-        <aside class="journey">
-          <div class="section-heading"><p class="eyebrow">SINU TÖÖPROTSESS</p><h2 id="journey-title">Tööolukord</h2><p id="journey-summary" class="status"></p></div>
-          <ol id="steps" class="steps"></ol>
-        </aside>
-        <main>
-          <p class="eyebrow">AI-VÕIMALUSTE KAART</p><h1 id="map-title">Tööprotsessi AI-kaart</h1><p id="map-intro" class="intro"></p><p id="notice" class="notice"></p>
-          <section aria-labelledby="opportunities-heading"><div class="section-heading"><p class="eyebrow">VÕIMALUSED</p><h2 id="opportunities-heading">Kus AI võiks aidata?</h2></div><div id="opportunities" class="opportunities"></div></section>
-        </main>
-        <aside class="insights">
-          <section aria-labelledby="quality-heading"><div class="section-heading"><p class="eyebrow">KVALITEEDI HINNANG</p><h2 id="quality-heading">Valitud võimalus</h2></div><div id="selected"></div><div id="quality"></div></section>
-          <section aria-labelledby="experiment-heading"><div class="section-heading" style="margin-top:28px;"><p class="eyebrow">JÄRGMINE KATSE</p><h2 id="experiment-heading">Väike ja kontrollitud</h2></div><div id="experiment"></div></section>
-          <p class="footer-note">See kaart on lokaalne HTML-fail. Seda ei avatud, jagatud ega salvestatud kuskile automaatselt.</p>
-        </aside>
-      </div>
+      <main>
+        <section class="hero"><p class="eyebrow">TÖÖPROTSESSI AI-KAART</p><h1 id="map-title">Tööolukord</h1><p id="lede" class="lede"></p><p id="notice" class="notice"></p></section>
+        <div class="legend" aria-label="AI sobivuse legend"><span><i class="dot"></i> Saab kohe proovida</span><span><i class="dot read"></i> Vajab lugemisligipääsu</span><span><i class="dot action"></i> Vajab tegevusõigust</span><span><i class="dot no"></i> Ei ole praegu AI-kandidaat</span></div>
+        <section aria-labelledby="process-heading"><div class="section-heading"><div><p class="eyebrow">PROTSESSI SAMMUD</p><h2 id="process-heading">AI esmahinnang igas sammus</h2></div><span id="step-count" class="count"></span></div><ol id="timeline" class="timeline"></ol></section>
+        <p class="footer-note">Kaart sisaldab ainult struktureeritud tööprotsessi andmeid. Seda ei avatud, jagatud ega salvestatud kuskile automaatselt.</p>
+      </main>
     </div>
     <script id="map-data" type="application/json">__TOOPROTSESSI_KAART_DATA__</script>
     <script>
       (() => {
-        const dataNode = document.getElementById("map-data");
-        const fallback = { title:"Tööprotsessi AI-kaart", notice:"Kaardi andmeid ei õnnestunud lugeda.", steps:[], opportunities:[], qualityAssessment:{}, experiment:{} };
-        let data = fallback;
-        try { data = JSON.parse(dataNode.textContent); } catch (error) { console.error("Tööprotsessi kaardi andmete lugemine ebaõnnestus.", error); }
+        const fallback = { schemaVersion:2, title:"Tööprotsessi AI-kaart", steps:[], notice:"Kaardi andmeid ei õnnestunud lugeda." };
+        let source = fallback;
+        try { source = JSON.parse(document.getElementById("map-data").textContent); } catch (error) { console.error("Tööprotsessi kaardi andmete lugemine ebaõnnestus.", error); }
         const value = (input, fallbackText="Täpsustamisel") => input === undefined || input === null || String(input).trim() === "" ? fallbackText : String(input);
         const empty = (node) => { while (node.firstChild) node.removeChild(node.firstChild); };
         const element = (tag, className, text) => { const node = document.createElement(tag); if (className) node.className = className; if (text !== undefined) node.textContent = text; return node; };
-        const appendDetail = (parent, label, text) => { parent.append(element("dt", "", label), element("dd", "", value(text))); };
+        const appendDetail = (parent, label, text) => parent.append(element("dt", "", label), element("dd", "", value(text)));
         const suitability = { kohe:["Saab kohe proovida", ""], lugemine:["Vajab lugemisligipääsu", "read"], tegevusoigus:["Vajab tegevusõigust", "action"], ei_sobi:["Ei ole praegu AI-kandidaat", "no"] };
         const qualityClass = { "Hea esimene AI-katse":"", "Sobib kontrollitud abiks":"checked", "Vajab paremat sisendit":"improve", "Ei sobi praegu selleks otsuseks":"stop" };
+        const legacyOpportunity = (stepNumber) => (Array.isArray(source.opportunities) ? source.opportunities.find((item) => Number(item.step) === Number(stepNumber)) : null);
+        const legacyDetailFor = (stepNumber, key) => source.selectedOpportunity && Number(source.selectedOpportunity.step) === Number(stepNumber) ? source[key] : null;
+        const steps = (Array.isArray(source.steps) ? source.steps : []).map((step) => {
+          const legacy = legacyOpportunity(step.number);
+          return { ...step, aiAssessment:step.aiAssessment || (legacy ? { suitability:legacy.suitability, title:legacy.title, summary:legacy.description, accessNeed:legacy.accessNeed, humanCheck:legacy.humanCheck } : null), qualityAssessment:step.qualityAssessment || legacyDetailFor(step.number, "qualityAssessment"), experiment:step.experiment || legacyDetailFor(step.number, "experiment") };
+        });
+        const dateValue = source.updatedAt || source.generatedAt || source.createdAt;
+        if (dateValue) { const date = new Date(dateValue); document.getElementById("stamp").textContent = Number.isNaN(date.getTime()) ? String(dateValue) : `Viimati uuendatud ${date.toLocaleString("et-EE")}`; }
+        document.title = `${value(source.title)} · Tööprotsessi kaart`;
+        document.getElementById("map-title").textContent = value(source.title, "Tööprotsessi AI-kaart");
+        document.getElementById("lede").textContent = "Igal sammul on esmane AI-sobivuse hinnang. Ava samm, et näha põhjendust; detailne kvaliteedihinnang ja katse ilmuvad alles pärast selle sammu täpsustamist vestluses.";
+        document.getElementById("notice").textContent = value(source.notice, "Kaart põhineb kasutaja kirjeldusel; inimene kontrollib tulemust.");
+        document.getElementById("step-count").textContent = `${steps.length} kaardistatud sammu`;
+        const timeline = document.getElementById("timeline");
+        empty(timeline);
+        if (!steps.length) timeline.append(element("li", "empty", "Kaardistatud samme ei ole."));
+        steps.forEach((step) => timeline.append(renderStep(step)));
 
-        document.title = `${value(data.title, "Tööprotsessi AI-kaart")} · Tööprotsessi kaart`;
-        document.getElementById("map-title").textContent = value(data.title, "Tööprotsessi AI-kaart");
-        document.getElementById("journey-title").textContent = value(data.title, "Tööolukord");
-        document.getElementById("journey-summary").textContent = `${Array.isArray(data.steps) ? data.steps.length : 0} kaardistatud sammu`;
-        document.getElementById("map-intro").textContent = "Kaart põhineb kasutaja kirjeldusel. Ligipääsuvajadus ei tähenda olemasolevat õigust ning inimene kontrollib tulemust.";
-        document.getElementById("notice").textContent = value(data.notice, "Kaart põhineb kasutaja kirjeldusel; inimene kontrollib tulemust.");
-        if (data.generatedAt) { const timestamp = new Date(data.generatedAt); document.getElementById("stamp").textContent = Number.isNaN(timestamp.getTime()) ? String(data.generatedAt) : timestamp.toLocaleString("et-EE"); }
-
-        const stepsNode = document.getElementById("steps");
-        empty(stepsNode);
-        const steps = Array.isArray(data.steps) ? data.steps : [];
-        if (!steps.length) stepsNode.append(element("li", "empty", "Kaardistatud samme ei ole."));
-        steps.forEach((step) => {
+        function renderStep(step) {
           const item = element("li", "step");
-          item.append(element("div", "", value(step.action)));
-          item.append(element("span", "actor", `${value(step.actorSystem)} · ${value(step.category)}`));
-          const source = element("div", "source");
-          source.append(element("b", "", "Sisend ja allikas"), document.createTextNode(value(step.inputSource)));
-          item.append(source, element("p", "output", `Väljund: ${value(step.informationOutput)}`));
-          stepsNode.append(item);
-        });
-
-        const opportunitiesNode = document.getElementById("opportunities");
-        empty(opportunitiesNode);
-        const opportunities = Array.isArray(data.opportunities) ? data.opportunities : [];
-        if (!opportunities.length) opportunitiesNode.append(element("p", "empty", "AI-võimalusi ei ole sellele kaardile lisatud."));
-        opportunities.forEach((opportunity) => {
-          const card = element("article", "opportunity");
-          const [label, badgeClass] = suitability[opportunity.suitability] || ["AI-võimalus", ""];
-          card.append(element("span", `badge ${badgeClass}`, label), element("h3", "", value(opportunity.title)), element("p", "", value(opportunity.description)));
-          const details = element("dl");
-          appendDetail(details, "SEOTUD TÖÖTEEKONNA SAMM", opportunity.step);
-          appendDetail(details, "LIGIPÄÄSUVAJADUS", opportunity.accessNeed);
-          appendDetail(details, "INIMESE KONTROLL", opportunity.humanCheck);
-          card.append(details);
-          opportunitiesNode.append(card);
-        });
-
-        const selectedNode = document.getElementById("selected");
-        empty(selectedNode);
-        if (data.selectedOpportunity && (data.selectedOpportunity.title || data.selectedOpportunity.step)) {
-          const selected = element("p", "selected");
-          selected.append(element("strong", "", "Hinnatud AI-võimalus: "), document.createTextNode(value(data.selectedOpportunity.title)));
-          if (data.selectedOpportunity.step) selected.append(document.createTextNode(` · samm ${data.selectedOpportunity.step}`));
-          selectedNode.append(selected);
+          item.append(element("div", "node", value(step.number, "?")));
+          const card = element("article", "step-card");
+          const assessment = step.aiAssessment && typeof step.aiAssessment === "object" ? step.aiAssessment : { suitability:"ei_sobi", title:"Esmane hinnang puudub", summary:"Selle sammu AI-sobivust tuleb vestluses täpsustada.", accessNeed:"Täpsustada.", humanCheck:"Inimene otsustab järgmise sammu." };
+          const [label, className] = suitability[assessment.suitability] || ["AI esmahinnang", "no"];
+          const head = element("div", "step-head");
+          const heading = element("div");
+          heading.append(element("h3", "", value(step.action)), element("p", "step-meta", `${value(step.actorSystem)} · ${value(step.category)}`));
+          head.append(heading, element("span", `badge ${className}`, label));
+          card.append(head);
+          const dataGrid = element("div", "data-grid");
+          const input = element("div", "data-item"); input.append(element("b", "", "Sisend ja allikas"), document.createTextNode(value(step.inputSource)));
+          const output = element("div", "data-item"); output.append(element("b", "", "Väljund"), document.createTextNode(value(step.informationOutput)));
+          dataGrid.append(input, output); card.append(dataGrid);
+          card.append(renderAssessment(assessment, label, className));
+          if (hasQuality(step.qualityAssessment)) card.append(renderQuality(step.qualityAssessment));
+          if (hasExperiment(step.experiment)) card.append(renderExperiment(step.experiment));
+          item.append(card);
+          return item;
         }
 
-        const qualityNode = document.getElementById("quality");
-        empty(qualityNode);
-        const quality = data.qualityAssessment && typeof data.qualityAssessment === "object" ? data.qualityAssessment : {};
-        const qualityFields = [["OODATUD VÄLJUND",quality.expectedOutput],["VASTUSEKINDLUS",quality.truthThreshold],["SISENDI VALMISOLEK",quality.inputReadiness],["MALL VÕI HEAD NÄITED",quality.templateReadiness],["KONTROLLIVIIS",quality.verificationMethod],["VEA MÕJU",quality.errorImpact],["TURVALINE AI ROLL",quality.safeAiRole],["SISENDI JÄRGMINE PARANDUS",quality.inputImprovements]].filter(([, fieldValue]) => fieldValue !== undefined && fieldValue !== null && String(fieldValue).trim());
-        if (quality.status || quality.rationale || qualityFields.length) {
-          const card = element("article", "quality-card");
-          if (quality.status) card.append(element("span", `quality-badge ${qualityClass[quality.status] || ""}`, quality.status));
-          if (quality.rationale) card.append(element("p", "", quality.rationale));
-          const details = element("dl");
-          qualityFields.forEach(([label, fieldValue]) => appendDetail(details, label, fieldValue));
-          card.append(details);
-          qualityNode.append(card);
-        } else qualityNode.append(element("p", "empty", "Kvaliteedihinnangut ei ole sellele kaardile lisatud."));
+        function renderAssessment(assessment, label, className) {
+          const details = element("details");
+          const summary = element("summary");
+          const left = element("span", "summary-left");
+          left.append(element("span", `badge ${className}`, label), element("span", "summary-label", value(assessment.title, "AI esmahinnang")));
+          summary.append(left); details.append(summary);
+          const body = element("div", "detail-body");
+          body.append(element("p", "", value(assessment.summary)));
+          const list = element("dl", "detail-grid");
+          appendDetail(list, "LIGIPÄÄSUVAJADUS", assessment.accessNeed);
+          appendDetail(list, "INIMESE KONTROLL", assessment.humanCheck);
+          body.append(list); details.append(body);
+          return details;
+        }
 
-        const experimentNode = document.getElementById("experiment");
-        empty(experimentNode);
-        const experiment = data.experiment && typeof data.experiment === "object" ? data.experiment : {};
-        if (experiment.title || experiment.goal) {
-          const card = element("article", "experiment-card");
-          card.append(element("h3", "", value(experiment.title, "Järgmine katse")));
-          const details = element("dl");
-          [["EESMÄRK",experiment.goal],["ESIMENE SAMM",experiment.firstStep],["VAJALIK SISEND",experiment.neededInput],["INIMESE KONTROLL",experiment.humanCheck],["KÜSIMUS IT-LE VÕI JUHILE",experiment.itQuestion]].forEach(([label, fieldValue]) => appendDetail(details, label, fieldValue));
-          card.append(details);
-          experimentNode.append(card);
-        } else experimentNode.append(element("p", "empty", "Katset ei ole sellele kaardile lisatud."));
+        function renderQuality(quality) {
+          const details = element("details", "quality-details");
+          const summary = element("summary");
+          const left = element("span", "summary-left");
+          left.append(element("span", `quality-badge ${qualityClass[quality.status] || ""}`, value(quality.status, "Kvaliteedi hinnang")), element("span", "summary-label", "Detailne kvaliteedihinnang"));
+          summary.append(left); details.append(summary);
+          const body = element("div", "detail-body");
+          if (quality.rationale) body.append(element("p", "", quality.rationale));
+          const list = element("dl", "detail-grid");
+          [["OODATUD VÄLJUND",quality.expectedOutput],["VASTUSEKINDLUS",quality.truthThreshold],["SISENDI VALMISOLEK",quality.inputReadiness],["MALL VÕI HEAD NÄITED",quality.templateReadiness],["KONTROLLIVIIS",quality.verificationMethod],["VEA MÕJU",quality.errorImpact],["TURVALINE AI ROLL",quality.safeAiRole],["SISENDI JÄRGMINE PARANDUS",quality.inputImprovements]].filter(([,fieldValue]) => fieldValue !== undefined && fieldValue !== null && String(fieldValue).trim()).forEach(([label,fieldValue]) => appendDetail(list,label,fieldValue));
+          body.append(list); details.append(body); return details;
+        }
+
+        function renderExperiment(experiment) {
+          const details = element("details", "experiment-details");
+          const summary = element("summary");
+          summary.append(element("span", "summary-left", "Järgmine kontrollitud katse")); details.append(summary);
+          const body = element("div", "detail-body");
+          const list = element("dl", "detail-grid");
+          [["KATSE",experiment.title],["EESMÄRK",experiment.goal],["ESIMENE SAMM",experiment.firstStep],["VAJALIK SISEND",experiment.neededInput],["INIMESE KONTROLL",experiment.humanCheck],["KÜSIMUS IT-LE VÕI JUHILE",experiment.itQuestion]].forEach(([label,fieldValue]) => appendDetail(list,label,fieldValue));
+          body.append(list); details.append(body); return details;
+        }
+
+        function hasQuality(quality) { return quality && typeof quality === "object" && Boolean(quality.status || quality.rationale); }
+        function hasExperiment(experiment) { return experiment && typeof experiment === "object" && Boolean(experiment.title || experiment.goal); }
       })();
     </script>
   </body>
