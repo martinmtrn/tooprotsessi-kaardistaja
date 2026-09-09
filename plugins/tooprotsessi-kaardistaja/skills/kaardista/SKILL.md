@@ -29,7 +29,7 @@ Kui kasutaja annab olemasoleva HTML-kaardi tee või ütleb, et soovib eelmist ka
 
 Säilita kõik olemasolevad sammud, esmahinnangud, kvaliteedihinnangud ja katsed. Uuenda ainult kasutaja valitud sammu, välja arvatud V2-kaardi esimesel kinnitatud uuendamisel lisatavad töökorralduse alternatiivid kõigile juba AI-sobivateks hinnatud sammudele. Kirjuta pärast kinnitust sama HTML-fail üle kõige uuema malliversiooniga. Ära eelda, et sama faili uuendamine on lubatud lihtsalt sellepärast, et seda loeti — küsi seda enne kirjutamist selgelt.
 
-Varasema 0.1-kaardi andmed tuleb enne uuendamist üle kanda uude vormi: seo iga `opportunities` kirje vastava sammuga `aiAssessment` väljaks ning teisalda ülemine `qualityAssessment` ja `experiment` `selectedOpportunity.step` alla. V2-kaart jääb loetavaks; sõnasta iga juba AI-sobivaks hinnatud sammu ja selle esmahinnangu põhjal töökorralduse alternatiivid, näita valitud sammu omi enne detailse lähenemise valimist ning kirjuta need V3-vormingus kaardile alles esimesel kinnitatud uuendamisel. Säilita kaardi pealkiri, loomise aeg, esmahinnangud, kvaliteedihinnangud ja katsed. Kui vanal sammul esmahinnang puudub, hinda see vestluses uuesti, mitte ära leiuta seda.
+Varasema 0.1-kaardi andmed tuleb enne uuendamist üle kanda uude vormi: seo iga `opportunities` kirje vastava sammuga `aiAssessment` väljaks ning teisalda ülemine `qualityAssessment` ja `experiment` `selectedOpportunity.step` alla. V2-kaart jääb loetavaks; sõnasta iga juba AI-sobivaks hinnatud sammu ja selle esmahinnangu põhjal töökorralduse alternatiivid, näita valitud sammu omi enne detailse lähenemise valimist ning kirjuta need V3-vormingus kaardile alles esimesel kinnitatud uuendamisel. V3-kaart jääb samuti loetavaks; ära oleta puuduvat ärieesmärki ega mõõdikut, vaid lisa `benefitHypothesis` ainult siis, kui kasutaja valib selle sammu uueks detailhinnanguks. Säilita kaardi pealkiri, loomise aeg, esmahinnangud, kvaliteedihinnangud ja katsed. Kui vanal sammul esmahinnang puudub, hinda see vestluses uuesti, mitte ära leiuta seda.
 
 Kui kasutaja ei anna olemasolevat kaarti, alusta uut tööolukorda. Kui kirjeldus puudub või on liiga lai, küsi lühikirjeldust ühest selge alguse ja nähtava lõpuga juhtumist. Ära kasuta automaatselt projekti faile ega muid kohalikke andmeid tööolukorra taustana.
 
@@ -69,18 +69,23 @@ Seejärel nimeta 2–4 kõige mõistlikumat sammu, mida detailsemalt hinnata, ja
 
 Kui valitud sammul on `processChangeIdeas`, küsi enne kvaliteediküsimusi täpselt ühe küsimusena, kas kasutaja soovib hinnata olemasoleva sammu AI-rolli või üht nimepidi pakutud töökorralduse alternatiivi. Kui ideid ei ole, hinda olemasolevat AI-rolli. Talleta valik nii `qualityAssessment.evaluatedApproach` kui ka `experiment.evaluatedApproach` väljas objektina: `kind` on `praegune_samm` või `protsessi_muudatus`, `title` on lähenemise nimi ning `proposedFlow` on protsessi muudatuse korral pakutud voog.
 
+Enne kvaliteediküsimusi küsi ühe küsimusena, millist kasu kasutaja selle lähenemisega eelkõige saavutada tahab. Paku sammu ja lähenemise põhjal kuni kaks põhjendatud lähtevarianti, kuid kasutaja peab valima ühe peamise kasu, seda muutma või sõnastama oma kasu. Teisejärguline kasu on vabatahtlik. Kasuta ainult järgmisi kategooriaid: `kvaliteet`, `aeg_toomaht`, `kulud`, `risk_umbertoe`, `teenus` või `muu` koos kasutaja antud sildiga.
+
 Küsi täpselt üks küsimus korraga järgmises järjekorras:
 
 1. oodatud väljund;
-2. kui töö on sisuloome, kas olemas on mall, kindel struktuur või paar head varasemat näidet; muidu jäta see väli tühjaks;
-3. vastusekindlus: `kontrollitavalt õige`, `hinnanguline või loominguline` või `mõlemat`;
-4. sisendi täielikkus ja ühesus;
-5. kontrolliviis;
-6. vea mõju.
+2. kasu mõõtmiskava: pärast oodatud väljundit paku üks lihtne näitaja, lähtepunkt, realistlik siht, võrreldav valim või ajavahemik ning kontrolliviis; kasutaja kinnitab või parandab seda;
+3. kui töö on sisuloome, kas olemas on mall, kindel struktuur või paar head varasemat näidet; muidu jäta see väli tühjaks;
+4. vastusekindlus: `kontrollitavalt õige`, `hinnanguline või loominguline` või `mõlemat`;
+5. sisendi täielikkus ja ühesus;
+6. kontrolliviis;
+7. vea mõju.
 
-Selgita vastusekindlust tavakeeles. Kui kõik vastused on olemas, lisa sammu alla `qualityAssessment` ühe staatusega: `Hea esimene AI-katse`, `Sobib kontrollitud abiks`, `Vajab paremat sisendit` või `Ei sobi praegu selleks otsuseks`. Ära anna numbrilist skoori ega garantiid. Põhjendus peab eristama sisendi valmisolekut, ligipääsuvajadust ja AI sobivust.
+Mõõdik peab vastama valitud kasule: kvaliteedi puhul kontrollnimekirja täituvus, puuduvad väljad, parandused või inimese kontrollitud näidis; aja või töömahu puhul minutid juhtumi kohta või juhtumite arv kindlas ajas; kulude puhul ainult teadaolevad otsesed kulud või kasutaja antud aja rahaline väärtus; riski või ümbertöö puhul vead, tagasisaatmised või parandused; teenuse puhul vastamis- või läbimisaeg ja olemasolev tagasisidenäitaja. Kui lähtepunkt puudub, ära leiuta numbrit: märgi see „Mõõta esimeses väikeses katses” ning kasuta katset lähtepunkti kogumiseks. Ära arvuta raha kasu ilma kasutaja kuluteabeta; vajadusel mõõda esmalt aega või ümbertööd. Kui pakutud mõõtmiskava ei sobi, küsi korraga ainult järgmist puuduvat osa.
 
-Koosta samal ajal selle sammu alla proportsionaalne `experiment`, ka siis, kui AI rolli tuleb vähendada. Katse peab olema väike, realistlik, algama käsitsi sisestatud mittetundliku näidissisendiga ning sisaldama pealkirja, eesmärki, esimest sammu, vajalikku sisendit, inimese kontrolli ja küsimust IT-le või juhile.
+Talleta kasutaja valitud kasu, tema põhjendus ja mõõtmiskava sammu `benefitHypothesis` väljana. See seotakse sama `evaluatedApproach`-iga nagu detailhinnang. Selgita vastusekindlust tavakeeles. Kui kõik vastused on olemas, lisa sammu alla `qualityAssessment` ühe staatusega: `Hea esimene AI-katse`, `Sobib kontrollitud abiks`, `Vajab paremat sisendit` või `Ei sobi praegu selleks otsuseks`. Ära anna numbrilist skoori ega garantiid. Põhjendus peab eristama sisendi valmisolekut, ligipääsuvajadust ja AI sobivust.
+
+Koosta samal ajal selle sammu alla proportsionaalne `experiment`, ka siis, kui AI rolli tuleb vähendada. Katse peab olema väike, realistlik, algama käsitsi sisestatud mittetundliku näidissisendiga ning sisaldama pealkirja, eesmärki, esimest sammu, vajalikku sisendit, inimese kontrolli ja küsimust IT-le või juhile. Seo katse eesmärk, esimene samm ja kontrolliviis valitud kasu ning mõõtmiskavaga, et katse ei jääks üldiseks AI-proovimiseks.
 
 Pärast detailset hinnangut küsi, kas kasutaja tahab sama kaarti kohe uuendada või jätkata järgmisel korral mõne teise sammuga.
 
@@ -92,7 +97,7 @@ Kasuta järgmist andmestruktuuri. Ära lisa vestluse transkripti ega algset tö�
 
 ```json
 {
-  "schemaVersion": 3,
+  "schemaVersion": 4,
   "title": "Tööolukorra nimi",
   "createdAt": "2026-09-09T12:00:00+03:00",
   "updatedAt": "2026-09-09T12:00:00+03:00",
@@ -117,13 +122,32 @@ Kasuta järgmist andmestruktuuri. Ära lisa vestluse transkripti ega algset tö�
         "conditions": "Nõusolek, ettevõtte reegel, säilitamise piirang, vajalik ligipääs ja inimese kontroll."
       }]
     },
+    "benefitHypothesis": {
+      "evaluatedApproach": {
+        "kind": "praegune_samm",
+        "title": "AI roll"
+      },
+      "primaryBenefit": {
+        "category": "aeg_toomaht",
+        "label": "Aja- või töömahu kokkuhoid"
+      },
+      "secondaryBenefit": null,
+      "userRationale": "Kasutaja kinnitatud põhjus AI abi proovimiseks.",
+      "measurement": {
+        "metric": "Mida võrreldakse",
+        "baseline": "Praegune lähtepunkt või „Mõõta esimeses väikeses katses”",
+        "target": "Realistlik siht",
+        "sample": "Võrreldav valim või ajavahemik",
+        "method": "Kuidas inimene tulemust kontrollib"
+      }
+    },
     "qualityAssessment": null,
     "experiment": null
   }]
 }
 ```
 
-`qualityAssessment` sisaldab välju `evaluatedApproach`, `status`, `expectedOutput`, `truthThreshold`, `inputReadiness`, `templateReadiness`, `verificationMethod`, `errorImpact`, `rationale`, `safeAiRole` ja `inputImprovements`. `experiment` sisaldab välju `evaluatedApproach`, `title`, `goal`, `firstStep`, `neededInput`, `humanCheck` ja `itQuestion`.
+`benefitHypothesis` sisaldab välju `evaluatedApproach`, `primaryBenefit`, valikulist `secondaryBenefit`, `userRationale` ja `measurement`. Mõlemad kasud sisaldavad `category` ning kasutajale nähtavat `label`; `muu` kategooria korral peab silt tulema kasutajalt. `measurement` sisaldab välju `metric`, `baseline`, `target`, `sample` ja `method`. `qualityAssessment` sisaldab välju `evaluatedApproach`, `status`, `expectedOutput`, `truthThreshold`, `inputReadiness`, `templateReadiness`, `verificationMethod`, `errorImpact`, `rationale`, `safeAiRole` ja `inputImprovements`. `experiment` sisaldab välju `evaluatedApproach`, `title`, `goal`, `firstStep`, `neededInput`, `humanCheck` ja `itQuestion`.
 
 Enne kirjutamist lahenda suhteline või mitmetähenduslik asukoht absoluutseks teeks, näita seda kasutajale ning küsi eraldi kinnitust. Kinnitatud absoluutne tee on kirjutamisvolitus ainult sellele failile.
 

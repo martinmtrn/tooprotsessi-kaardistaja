@@ -1,5 +1,11 @@
 # Muudatuste ajalugu
 
+## 0.4.0 — 2026-09-09
+
+- Detailhinnangus valib kasutaja nüüd AI kasutamise peamise ja valikulise teisejärgulise kasu.
+- Lisatud lähtepunkti, sihi ja kontrolliviisiga mõõtmiskava ning sellele vastav HTML-kaardi plokk.
+- V3-kaardid jäävad loetavaks; nende puuduvaid ärieesmärke ei oletata.
+
 ## 0.3.0 — 2026-09-09
 
 - Lisatud AI-sobivatele sammudele põhjendatud, tingimuslikud töökorralduse alternatiivid.

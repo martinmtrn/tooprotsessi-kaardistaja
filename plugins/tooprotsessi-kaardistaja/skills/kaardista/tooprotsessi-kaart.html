@@ -48,6 +48,7 @@
       details[open] summary { border-bottom:1px solid #e4e9e3; background:#f5f8f2; }.detail-body { padding:13px; }.detail-body > p { margin:0 0 10px; color:#56665d; font-size:11px; line-height:1.55; }
       dl { margin:0; }.detail-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:0 16px; }.detail-grid dt { margin-top:10px; }.detail-grid dd { margin:2px 0 0; color:#405148; font-size:10px; line-height:1.45; white-space:pre-wrap; }
       .change-ideas { margin-top:15px; padding-top:13px; border-top:1px solid #e4e9e3; }.change-ideas-heading { margin:0 0 9px; color:var(--green); font:500 9px/1.35 ui-monospace,monospace; letter-spacing:.07em; text-transform:uppercase; }.change-idea { margin-top:8px; padding:11px; border-left:2px solid #8eae7c; background:#f4f7f1; }.change-idea:first-of-type { margin-top:0; }.change-idea h4 { margin:0 0 5px; color:#304138; font-size:11px; line-height:1.4; }.change-idea p { margin:0 0 8px; color:#56665d; font-size:11px; line-height:1.5; white-space:pre-wrap; }
+      .benefit-details { border-color:#b7c8ad; background:#f8fbf5; }.benefit-details[open] summary { background:#edf5e9; }.benefit-badge { display:inline-block; padding:5px 7px; border-radius:2px; color:var(--green); background:var(--green-soft); font:500 8px ui-monospace,monospace; letter-spacing:.04em; text-transform:uppercase; white-space:nowrap; }
       .quality-details { border-color:#d3dfca; background:#f8fbf5; }.experiment-details { border-color:#94b685; background:#eaf4e5; }.experiment-details[open] summary { background:#e2f0dc; }
       .footer-note { margin:28px 0 0 66px; color:var(--muted); font-size:10px; line-height:1.5; }
       @media (max-width:650px) { .shell { width:min(100% - 28px,620px); }.hero { padding-top:38px; }header { min-height:70px; }.stamp { font-size:10px; }.step { grid-template-columns:37px minmax(0,1fr); gap:11px; }.node { width:37px; height:37px; font-size:10px; }.step:not(:last-child)::before { left:18px; top:38px; }.step-card { padding:15px; }.step-head { display:block; }.step-head .badge { margin-top:9px; }.data-grid,.detail-grid { grid-template-columns:1fr; }.footer-note { margin-left:48px; } }
@@ -66,7 +67,7 @@
     <script id="map-data" type="application/json">__TOOPROTSESSI_KAART_DATA__</script>
     <script>
       (() => {
-        const fallback = { schemaVersion:3, title:"Tööprotsessi AI-kaart", steps:[], notice:"Kaardi andmeid ei õnnestunud lugeda." };
+        const fallback = { schemaVersion:4, title:"Tööprotsessi AI-kaart", steps:[], notice:"Kaardi andmeid ei õnnestunud lugeda." };
         let source = fallback;
         try { source = JSON.parse(document.getElementById("map-data").textContent); } catch (error) { console.error("Tööprotsessi kaardi andmete lugemine ebaõnnestus.", error); }
         const value = (input, fallbackText="Täpsustamisel") => input === undefined || input === null || String(input).trim() === "" ? fallbackText : String(input);
@@ -75,6 +76,7 @@
         const element = (tag, className, text) => { const node = document.createElement(tag); if (className) node.className = className; if (text !== undefined) node.textContent = text; return node; };
         const appendDetail = (parent, label, text) => parent.append(element("dt", "", label), element("dd", "", value(text)));
         const suitability = { kohe:["Saab kohe proovida", ""], lugemine:["Vajab lugemisligipääsu", "read"], tegevusoigus:["Vajab tegevusõigust", "action"], ei_sobi:["Ei ole praegu AI-kandidaat", "no"] };
+        const benefitCategory = { kvaliteet:"Kvaliteet ja järjepidevus", aeg_toomaht:"Aja- või töömahu kokkuhoid", kulud:"Otseste kulude kokkuhoid", risk_umbertoe:"Vigade, ümbertöö või riski vähendamine", teenus:"Teenuse kiirus või kliendikogemus" };
         const qualityClass = { "Hea esimene AI-katse":"", "Sobib kontrollitud abiks":"checked", "Vajab paremat sisendit":"improve", "Ei sobi praegu selleks otsuseks":"stop" };
         const legacyOpportunity = (stepNumber) => (Array.isArray(source.opportunities) ? source.opportunities.find((item) => Number(item.step) === Number(stepNumber)) : null);
         const legacyDetailFor = (stepNumber, key) => source.selectedOpportunity && Number(source.selectedOpportunity.step) === Number(stepNumber) ? source[key] : null;
@@ -86,7 +88,7 @@
         if (dateValue) { const date = new Date(dateValue); document.getElementById("stamp").textContent = Number.isNaN(date.getTime()) ? String(dateValue) : `Viimati uuendatud ${date.toLocaleString("et-EE")}`; }
         document.title = `${value(source.title)} · Tööprotsessi kaart`;
         document.getElementById("map-title").textContent = value(source.title, "Tööprotsessi AI-kaart");
-        document.getElementById("lede").textContent = "Igal sammul on esmane AI-sobivuse hinnang. Ava samm, et näha põhjendust ja võimalikke töökorralduse alternatiive; detailne kvaliteedihinnang ja katse ilmuvad pärast selle sammu täpsustamist vestluses.";
+        document.getElementById("lede").textContent = "Igal sammul on esmane AI-sobivuse hinnang. Ava samm, et näha põhjendust ja võimalikke töökorralduse alternatiive; pärast detailset arutelu kuvatakse ka oodatud kasu, mõõtmiskava, kvaliteedihinnang ja katse.";
         document.getElementById("notice").textContent = value(source.notice, "Kaart põhineb kasutaja kirjeldusel; inimene kontrollib tulemust.");
         document.getElementById("step-count").textContent = `${steps.length} kaardistatud sammu`;
         const timeline = document.getElementById("timeline");
@@ -110,6 +112,7 @@
           const output = element("div", "data-item"); output.append(element("b", "", "Väljund"), document.createTextNode(value(step.informationOutput)));
           dataGrid.append(input, output); card.append(dataGrid);
           card.append(renderAssessment(assessment, label, className));
+          if (hasBenefit(step.benefitHypothesis)) card.append(renderBenefit(step.benefitHypothesis));
           if (hasQuality(step.qualityAssessment)) card.append(renderQuality(step.qualityAssessment));
           if (hasExperiment(step.experiment)) card.append(renderExperiment(step.experiment));
           item.append(card);
@@ -154,6 +157,32 @@
           const title = hasText(approach.title) ? String(approach.title) : "";
           const flow = hasText(approach.proposedFlow) ? String(approach.proposedFlow) : "";
           return title && flow ? `${title}: ${flow}` : title || flow;
+        }
+
+        function benefitText(benefit) {
+          if (!benefit) return "";
+          if (typeof benefit !== "object") return String(benefit);
+          if (hasText(benefit.label)) return String(benefit.label);
+          return benefitCategory[benefit.category] || (hasText(benefit.category) ? String(benefit.category) : "");
+        }
+
+        function hasBenefit(hypothesis) {
+          const measurement = hypothesis && typeof hypothesis.measurement === "object" ? hypothesis.measurement : {};
+          return hypothesis && typeof hypothesis === "object" && Boolean(benefitText(hypothesis.primaryBenefit) || hasText(hypothesis.userRationale) || [measurement.metric,measurement.baseline,measurement.target,measurement.sample,measurement.method].some(hasText));
+        }
+
+        function renderBenefit(hypothesis) {
+          const details = element("details", "benefit-details");
+          const summary = element("summary");
+          const left = element("span", "summary-left");
+          left.append(element("span", "benefit-badge", benefitText(hypothesis.primaryBenefit) || "Oodatud kasu"), element("span", "summary-label", "Oodatud kasu ja mõõtmine"));
+          summary.append(left); details.append(summary);
+          const body = element("div", "detail-body");
+          if (hasText(hypothesis.userRationale)) body.append(element("p", "", hypothesis.userRationale));
+          const measurement = hypothesis.measurement && typeof hypothesis.measurement === "object" ? hypothesis.measurement : {};
+          const list = element("dl", "detail-grid");
+          [["HINNATAV LÄHENEMINE",approachText(hypothesis.evaluatedApproach)],["PEAMINE KASU",benefitText(hypothesis.primaryBenefit)],["TEINEJÄRGULINE KASU",benefitText(hypothesis.secondaryBenefit)],["MÕÕDIK",measurement.metric],["LÄHTEPUNKT",measurement.baseline],["SIHT",measurement.target],["VALIM VÕI AEG",measurement.sample],["MÕÕTMISE JA KONTROLLI VIIS",measurement.method]].filter(([,fieldValue]) => hasText(fieldValue)).forEach(([label,fieldValue]) => appendDetail(list,label,fieldValue));
+          body.append(list); details.append(body); return details;
         }
 
         function renderQuality(quality) {
