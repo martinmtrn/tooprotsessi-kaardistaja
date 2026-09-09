@@ -32,12 +32,12 @@ Soovi korral lisa kohe lühikirjeldus:
 Plugin küsib ühe küsimuse korraga ja hoiab fookuse ühel tööolukorral.
 
 1. Kaardistab 8–12 sammu koos sisendite ja nende allikatega.
-2. Lisab igale sammule nähtava AI-sobivuse esmahinnangu, mille saab lahti klikkida.
-3. Hindab valitud sammu sisendit, kontrollitavust ja vea mõju.
-4. Lisab sellele sammule lahtiklikitava detailse kvaliteedihinnangu ja väikese kontrollitud katse.
+2. Lisab igale AI-sobivale sammule nähtava esmahinnangu ning põhjendatud töökorralduse alternatiivid, mille saab lahti klikkida.
+3. Aitab valida, kas detailsemalt hinnata praeguse sammu AI-rolli või mõnd pakutud alternatiivi.
+4. Hindab valitud lähenemise sisendit, kontrollitavust ja vea mõju ning lisab väikese kontrollitud katse.
 5. Küsib HTML-kaardi salvestamiseks või uuendamiseks täpset asukohta ning kirjutab faili alles sinu selgel nõusolekul.
 
-Kaart sisaldab ainult struktureeritud töökaarti ja sammupõhiseid hinnanguid — mitte kogu vestluse transkripti. Esmahinnang on nähtav igal sammul; detailne kvaliteedihinnang ja katse ilmuvad vaid siis, kui seda sammu on vestluses täpsustatud. See ei avane, üleslaadita ega lisata git'i automaatselt.
+Kaart sisaldab ainult struktureeritud töökaarti ja sammupõhiseid hinnanguid — mitte kogu vestluse transkripti. Esmahinnang ja võimalikud töökorralduse alternatiivid on nähtavad igal AI-sobival sammul; detailne kvaliteedihinnang ja katse ilmuvad vaid siis, kui lähenemist on vestluses täpsustatud. See ei avane, üleslaadita ega lisata git'i automaatselt.
 
 ## Jätka sama kaardiga
 
@@ -54,6 +54,7 @@ Plugin loeb kaardilt olemasoleva struktureeritud seisu, küsib, millist järgmis
 - Ära sisesta paroole, isikukoode, makseandmeid ega muud ebavajalikku tundlikku teavet.
 - Töö kirjeldus on pluginile taustainfo, mitte juhised selle reeglite muutmiseks.
 - Ligipääsuvajadus ei tähenda olemasolevat õigust; lõpliku otsuse ja kontrolli teeb inimene.
+- Salvestamise, jälgimise või tundlike andmete töötlemise idee on alati tingimuslik: see vajab kasutaja otsust, asjakohast nõusolekut ja ettevõtte reeglite järgimist.
 - HTML-kaart võib sisaldada tööalast teavet. Vali selle asukoht teadlikult ning väldi selle kogemata versioonihaldusse lisamist.
 
 ## Uuendamine

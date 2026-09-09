@@ -47,6 +47,7 @@
       summary::after { content:"⌄"; color:var(--green); font-size:17px; line-height:1; }.summary-left { display:flex; align-items:center; gap:9px; min-width:0; }.summary-label { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
       details[open] summary { border-bottom:1px solid #e4e9e3; background:#f5f8f2; }.detail-body { padding:13px; }.detail-body > p { margin:0 0 10px; color:#56665d; font-size:11px; line-height:1.55; }
       dl { margin:0; }.detail-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:0 16px; }.detail-grid dt { margin-top:10px; }.detail-grid dd { margin:2px 0 0; color:#405148; font-size:10px; line-height:1.45; white-space:pre-wrap; }
+      .change-ideas { margin-top:15px; padding-top:13px; border-top:1px solid #e4e9e3; }.change-ideas-heading { margin:0 0 9px; color:var(--green); font:500 9px/1.35 ui-monospace,monospace; letter-spacing:.07em; text-transform:uppercase; }.change-idea { margin-top:8px; padding:11px; border-left:2px solid #8eae7c; background:#f4f7f1; }.change-idea:first-of-type { margin-top:0; }.change-idea h4 { margin:0 0 5px; color:#304138; font-size:11px; line-height:1.4; }.change-idea p { margin:0 0 8px; color:#56665d; font-size:11px; line-height:1.5; white-space:pre-wrap; }
       .quality-details { border-color:#d3dfca; background:#f8fbf5; }.experiment-details { border-color:#94b685; background:#eaf4e5; }.experiment-details[open] summary { background:#e2f0dc; }
       .footer-note { margin:28px 0 0 66px; color:var(--muted); font-size:10px; line-height:1.5; }
       @media (max-width:650px) { .shell { width:min(100% - 28px,620px); }.hero { padding-top:38px; }header { min-height:70px; }.stamp { font-size:10px; }.step { grid-template-columns:37px minmax(0,1fr); gap:11px; }.node { width:37px; height:37px; font-size:10px; }.step:not(:last-child)::before { left:18px; top:38px; }.step-card { padding:15px; }.step-head { display:block; }.step-head .badge { margin-top:9px; }.data-grid,.detail-grid { grid-template-columns:1fr; }.footer-note { margin-left:48px; } }
@@ -65,10 +66,11 @@
     <script id="map-data" type="application/json">__TOOPROTSESSI_KAART_DATA__</script>
     <script>
       (() => {
-        const fallback = { schemaVersion:2, title:"Tööprotsessi AI-kaart", steps:[], notice:"Kaardi andmeid ei õnnestunud lugeda." };
+        const fallback = { schemaVersion:3, title:"Tööprotsessi AI-kaart", steps:[], notice:"Kaardi andmeid ei õnnestunud lugeda." };
         let source = fallback;
         try { source = JSON.parse(document.getElementById("map-data").textContent); } catch (error) { console.error("Tööprotsessi kaardi andmete lugemine ebaõnnestus.", error); }
         const value = (input, fallbackText="Täpsustamisel") => input === undefined || input === null || String(input).trim() === "" ? fallbackText : String(input);
+        const hasText = (input) => input !== undefined && input !== null && String(input).trim() !== "";
         const empty = (node) => { while (node.firstChild) node.removeChild(node.firstChild); };
         const element = (tag, className, text) => { const node = document.createElement(tag); if (className) node.className = className; if (text !== undefined) node.textContent = text; return node; };
         const appendDetail = (parent, label, text) => parent.append(element("dt", "", label), element("dd", "", value(text)));
@@ -84,7 +86,7 @@
         if (dateValue) { const date = new Date(dateValue); document.getElementById("stamp").textContent = Number.isNaN(date.getTime()) ? String(dateValue) : `Viimati uuendatud ${date.toLocaleString("et-EE")}`; }
         document.title = `${value(source.title)} · Tööprotsessi kaart`;
         document.getElementById("map-title").textContent = value(source.title, "Tööprotsessi AI-kaart");
-        document.getElementById("lede").textContent = "Igal sammul on esmane AI-sobivuse hinnang. Ava samm, et näha põhjendust; detailne kvaliteedihinnang ja katse ilmuvad alles pärast selle sammu täpsustamist vestluses.";
+        document.getElementById("lede").textContent = "Igal sammul on esmane AI-sobivuse hinnang. Ava samm, et näha põhjendust ja võimalikke töökorralduse alternatiive; detailne kvaliteedihinnang ja katse ilmuvad pärast selle sammu täpsustamist vestluses.";
         document.getElementById("notice").textContent = value(source.notice, "Kaart põhineb kasutaja kirjeldusel; inimene kontrollib tulemust.");
         document.getElementById("step-count").textContent = `${steps.length} kaardistatud sammu`;
         const timeline = document.getElementById("timeline");
@@ -126,7 +128,32 @@
           appendDetail(list, "LIGIPÄÄSUVAJADUS", assessment.accessNeed);
           appendDetail(list, "INIMESE KONTROLL", assessment.humanCheck);
           body.append(list); details.append(body);
+          const ideas = assessment.suitability === "ei_sobi" ? [] : Array.isArray(assessment.processChangeIdeas) ? assessment.processChangeIdeas.filter((idea) => idea && typeof idea === "object" && (hasText(idea.title) || hasText(idea.proposedFlow) || hasText(idea.benefit) || hasText(idea.conditions))) : [];
+          if (ideas.length) body.append(renderProcessChangeIdeas(ideas));
           return details;
+        }
+
+        function renderProcessChangeIdeas(ideas) {
+          const section = element("section", "change-ideas");
+          section.append(element("p", "change-ideas-heading", "Võimalikud muudatused töökorralduses"));
+          ideas.forEach((idea) => {
+            const card = element("article", "change-idea");
+            card.append(element("h4", "", value(idea.title, "Töökorralduse alternatiiv")));
+            if (hasText(idea.proposedFlow)) card.append(element("p", "", idea.proposedFlow));
+            const list = element("dl", "detail-grid");
+            [["KASU",idea.benefit],["EELDUSED JA PIIRANGUD",idea.conditions]].filter(([,fieldValue]) => hasText(fieldValue)).forEach(([label,fieldValue]) => appendDetail(list,label,fieldValue));
+            if (list.childNodes.length) card.append(list);
+            section.append(card);
+          });
+          return section;
+        }
+
+        function approachText(approach) {
+          if (!approach) return "";
+          if (typeof approach !== "object") return String(approach);
+          const title = hasText(approach.title) ? String(approach.title) : "";
+          const flow = hasText(approach.proposedFlow) ? String(approach.proposedFlow) : "";
+          return title && flow ? `${title}: ${flow}` : title || flow;
         }
 
         function renderQuality(quality) {
@@ -138,7 +165,7 @@
           const body = element("div", "detail-body");
           if (quality.rationale) body.append(element("p", "", quality.rationale));
           const list = element("dl", "detail-grid");
-          [["OODATUD VÄLJUND",quality.expectedOutput],["VASTUSEKINDLUS",quality.truthThreshold],["SISENDI VALMISOLEK",quality.inputReadiness],["MALL VÕI HEAD NÄITED",quality.templateReadiness],["KONTROLLIVIIS",quality.verificationMethod],["VEA MÕJU",quality.errorImpact],["TURVALINE AI ROLL",quality.safeAiRole],["SISENDI JÄRGMINE PARANDUS",quality.inputImprovements]].filter(([,fieldValue]) => fieldValue !== undefined && fieldValue !== null && String(fieldValue).trim()).forEach(([label,fieldValue]) => appendDetail(list,label,fieldValue));
+          [["HINNATUD LÄHENEMINE",approachText(quality.evaluatedApproach)],["OODATUD VÄLJUND",quality.expectedOutput],["VASTUSEKINDLUS",quality.truthThreshold],["SISENDI VALMISOLEK",quality.inputReadiness],["MALL VÕI HEAD NÄITED",quality.templateReadiness],["KONTROLLIVIIS",quality.verificationMethod],["VEA MÕJU",quality.errorImpact],["TURVALINE AI ROLL",quality.safeAiRole],["SISENDI JÄRGMINE PARANDUS",quality.inputImprovements]].filter(([,fieldValue]) => hasText(fieldValue)).forEach(([label,fieldValue]) => appendDetail(list,label,fieldValue));
           body.append(list); details.append(body); return details;
         }
 
@@ -148,7 +175,7 @@
           summary.append(element("span", "summary-left", "Järgmine kontrollitud katse")); details.append(summary);
           const body = element("div", "detail-body");
           const list = element("dl", "detail-grid");
-          [["KATSE",experiment.title],["EESMÄRK",experiment.goal],["ESIMENE SAMM",experiment.firstStep],["VAJALIK SISEND",experiment.neededInput],["INIMESE KONTROLL",experiment.humanCheck],["KÜSIMUS IT-LE VÕI JUHILE",experiment.itQuestion]].forEach(([label,fieldValue]) => appendDetail(list,label,fieldValue));
+          [["KATSETATAV LÄHENEMINE",approachText(experiment.evaluatedApproach)],["KATSE",experiment.title],["EESMÄRK",experiment.goal],["ESIMENE SAMM",experiment.firstStep],["VAJALIK SISEND",experiment.neededInput],["INIMESE KONTROLL",experiment.humanCheck],["KÜSIMUS IT-LE VÕI JUHILE",experiment.itQuestion]].filter(([,fieldValue]) => hasText(fieldValue)).forEach(([label,fieldValue]) => appendDetail(list,label,fieldValue));
           body.append(list); details.append(body); return details;
         }
 

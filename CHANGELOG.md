@@ -1,5 +1,11 @@
 # Muudatuste ajalugu
 
+## 0.3.0 — 2026-09-09
+
+- Lisatud AI-sobivatele sammudele põhjendatud, tingimuslikud töökorralduse alternatiivid.
+- Detailne kvaliteedihinnang ja kontrollitud katse näitavad nüüd hinnatud lähenemist.
+- HTML-mall loeb V2-kaarte edasi ning kinnitatud uuendusel kirjutab need V3-vormingusse.
+
 ## 0.2.0 — 2026-09-09
 
 - HTML-kaart on nüüd üks protsessijoon, kus igal sammul on AI-sobivuse esmahinnang.
