@@ -1,5 +1,12 @@
 # Muudatuste ajalugu
 
+## 0.6.0 — 2026-09-09
+
+- Sammupõhise lahendusvõrdluse asemel loob plugin 3–5 protsessiülest prototüübiideed ning tõstab ühe neist esile märgisega „Alusta siit”.
+- Üks prototüüp võib kombineerida AI, deterministliku töötluse, read/write connector'id ja inimese kontrolli ning pakkuda põhjendatud protsessi ümberkujundust.
+- Lisatud protsessikontekst, ehitatava prototüübi visand, riskipõhine esimese katse valik ja viis stsenaariumifikstuuri.
+- V4/V5 kaardid jäävad loetavaks ning nende vanad sammupõhised andmed säilitatakse V6 uuendusel.
+
 ## 0.5.0 — 2026-09-09
 
 - Iga sammu detailvaates on nüüd soovitatud lahendustee ja võrreldavad AI-chat, read-connector, write-connector ning deterministlik alternatiiv.

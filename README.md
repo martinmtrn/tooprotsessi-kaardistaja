@@ -1,8 +1,8 @@
 # Tööprotsessi kaardistaja Claude Code'ile
 
 Eestikeelne Claude Code'i plugin, mis aitab kaardistada ühe päris tööolukorra,
-hinnata AI-sobivust igas protsessisammus ning salvestada tulemuse iseseisva
-HTML-kaardina.
+leida protsessiülesed AI, integratsiooni ja deterministliku automatiseerimise
+prototüübid ning salvestada tulemuse iseseisva HTML-kaardina.
 See kasutab sinu olemasolevat Claude Code'i seanssi: plugin ei vaja API-võtit,
 ei käivita serverit ega tee võrgupäringuid.
 
@@ -31,15 +31,15 @@ Soovi korral lisa kohe lühikirjeldus:
 
 Plugin küsib ühe küsimuse korraga ja hoiab fookuse ühel tööolukorral.
 
-1. Kaardistab 8–12 sammu koos sisendite ja nende allikatega.
-2. Lisab igale sammule nähtava esmahinnangu, põhjendatud töökorralduse alternatiivid ja nelja tee võrdluse: käsitsi AI-chat, lugemis- või tegevusõigusega connector ning deterministlik lahendus.
-3. Tõstab sammus esile sobivaima tee ning selgitab, millal skript, valem või reeglipõhine automaatika on AI-st usaldusväärsem.
-4. Aitab valida, kas detailsemalt hinnata soovitatud lahendusteed või mõnd pakutud töökorralduse alternatiivi.
-5. Paneb kasutaja valima oodatud kasu ning kinnitama lihtsa lähtepunkti–siht mõõtmiskava.
-6. Hindab valitud lähenemise sisendit, kontrollitavust ja vea mõju ning lisab väikese kontrollitud katse.
+1. Kaardistab ühe hiljutise päris juhtumi 5–12 sammuna koos sisendite, süsteemide ja valukohtadega.
+2. Koostab 3–5 protsessiülest prototüübiideed, mis võivad ühendada AI, kindlad reeglid või koodi, süsteemide read/write ühendused ja inimese kontrolli.
+3. Pakub põhjendatud juhul välja ka täiesti uue töökorralduse, mis eemaldab või ühendab praeguseid samme.
+4. Tõstab väärtuse, teostatavuse, riski ja õppimisväärtuse põhjal esile ühe „Alusta siit” idee.
+5. Muudab valitud idee ehitatavaks visandiks koos käivitaja, süsteemide, õiguste, eranditee ja inimese kontrolliga.
+6. Seob prototüübi oodatud kasu, mõõtmiskava ja kõige suuremat ebakindlust kontrolliva esimese katsega.
 7. Küsib HTML-kaardi salvestamiseks või uuendamiseks täpset asukohta ning kirjutab faili alles sinu selgel nõusolekul.
 
-Kaart sisaldab ainult struktureeritud töökaarti ja sammupõhiseid hinnanguid — mitte kogu vestluse transkripti. Esmahinnang ja lahendusvõrdlus on nähtavad igal sammul; oodatud kasu, mõõtmiskava, detailne kvaliteedihinnang ja katse ilmuvad vaid siis, kui lähenemist on vestluses täpsustatud. See ei avane, üleslaadita ega lisata git'i automaatselt.
+Kaart sisaldab ainult struktureeritud töökaarti, protsessikonteksti, prototüübiportfelli ja kinnitatud detailhinnanguid — mitte kogu vestluse transkripti. Üks idee on nähtavalt soovitatud ning valitud idee juurde ilmuvad oodatud kasu, mõõtmiskava ja esimene prototüübiplaan. Kaarti ei avata, laadita üles ega lisata git'i automaatselt.
 
 ## Jätka sama kaardiga
 
@@ -49,7 +49,7 @@ Uues Claude Code'i vestluses anna pluginile olemasoleva kaardi absoluutne tee:
 /tooprotsessi-kaardistaja:kaardista /täistee/minu-tooprotsessi-kaart.html
 ```
 
-Plugin loeb kaardilt olemasoleva struktureeritud seisu, küsib, millist järgmist sammu soovid detailsemalt arendada, ning säilitab varasemad hinnangud. Sama HTML-fail kirjutatakse üle ainult pärast sinu kinnitust.
+Plugin loeb kaardilt olemasoleva struktureeritud seisu, küsib, millist prototüübiideed soovid detailsemalt arendada, ning säilitab varasemad hinnangud. V5 või vanema kaardi kinnitatud uuendusel lisatakse protsessiülene V6 prototüübiportfell. Sama HTML-fail kirjutatakse üle ainult pärast sinu kinnitust.
 
 ## Privaatsus ja turvalisus
 

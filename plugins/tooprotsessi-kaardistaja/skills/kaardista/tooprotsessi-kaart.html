@@ -22,6 +22,7 @@
       h3 { margin:0; font-size:14px; line-height:1.35; letter-spacing:-.02em; }
       .lede,.notice,.empty { color:var(--muted); font-size:13px; line-height:1.6; }
       .notice { margin:24px 0 0; padding:12px 15px; border-left:3px solid #8eae7c; background:#f1f4ed; }
+      .process-context { margin-top:14px; padding:15px; border:1px solid #dbe1d9; border-radius:5px; background:rgba(255,254,250,.75); }.process-context h2 { margin-bottom:8px; font-size:16px; }.process-context .detail-grid dt { margin-top:7px; }
       .legend { display:flex; flex-wrap:wrap; gap:8px 14px; padding:16px 0 22px; border-bottom:1px solid var(--line); color:var(--muted); font-size:11px; }
       .legend span { display:flex; align-items:center; gap:6px; }
       .dot { width:9px; height:9px; border-radius:50%; background:var(--green); }
@@ -40,6 +41,7 @@
       .data-item b,dt { display:block; margin-bottom:3px; color:#6a7a70; font:500 8px ui-monospace,monospace; letter-spacing:.05em; text-transform:uppercase; }
       .badge { display:inline-block; padding:5px 7px; border-radius:2px; color:var(--green); background:#e4efe0; font:500 8px ui-monospace,monospace; letter-spacing:.04em; text-transform:uppercase; white-space:nowrap; }
       .badge.read,.quality-badge.checked { color:var(--gold); background:var(--gold-soft); }.badge.action,.quality-badge.improve { color:var(--orange); background:var(--orange-soft); }.badge.no,.quality-badge.stop { color:var(--grey); background:var(--grey-soft); }
+      .prototype-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:13px; margin-bottom:8px; }.prototype-card { padding:17px; border:1px solid #d5ddd4; border-radius:5px; background:#fffefa; box-shadow:0 10px 30px rgba(26,47,37,.05); }.prototype-card.recommended { grid-column:1/-1; border:2px solid #7ca268; background:linear-gradient(145deg,#f1f8ec,#fffefa 58%); }.prototype-head { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }.prototype-head h3 { font-size:16px; }.prototype-tags { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:5px; }.prototype-badge,.type-badge,.component-badge { display:inline-block; padding:5px 7px; border-radius:2px; font:500 8px ui-monospace,monospace; letter-spacing:.04em; text-transform:uppercase; white-space:nowrap; }.prototype-badge { color:var(--green); background:var(--green-soft); }.prototype-badge.later { color:var(--grey); background:var(--grey-soft); }.type-badge { color:var(--gold); background:var(--gold-soft); }.prototype-summary { margin:9px 0 11px; color:#4f5f56; font-size:12px; line-height:1.55; }.future-flow { margin:0 0 11px; padding:10px 11px; border-left:3px solid #7ca268; background:#edf5e9; color:#2e493b; font-size:11px; font-weight:700; line-height:1.55; white-space:pre-wrap; }.prototype-details { border-color:#cddbc5; }.components { display:grid; gap:7px; margin-top:13px; }.components-heading { margin:0; color:var(--green); font:500 9px/1.35 ui-monospace,monospace; letter-spacing:.07em; text-transform:uppercase; }.component { padding:10px; border-left:2px solid #8eae7c; background:#f5f8f2; }.component-head { display:flex; align-items:flex-start; justify-content:space-between; gap:8px; }.component h4 { margin:0 0 5px; color:#304138; font-size:11px; }.component p { margin:0 0 6px; color:#56665d; font-size:10px; line-height:1.45; }.component-badge.ai { color:#315c87; background:#e2edf7; }.component-badge.deterministic { color:#5b481e; background:#f4e8c8; }.component-badge.connector { color:var(--orange); background:var(--orange-soft); }.component-badge.human { color:var(--green); background:var(--green-soft); }.prototype-plan { border-color:#7ca268; background:#edf5e9; }.prototype-plan[open] summary { background:#e3f0dd; }
       details { overflow:hidden; border:1px solid #dbe1d9; border-radius:4px; background:#fff; }
       details + details { margin-top:9px; }
       summary { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 13px; cursor:pointer; list-style:none; color:#304138; font-size:12px; font-weight:800; }
@@ -52,15 +54,16 @@
       .benefit-details { border-color:#b7c8ad; background:#f8fbf5; }.benefit-details[open] summary { background:#edf5e9; }.benefit-badge { display:inline-block; padding:5px 7px; border-radius:2px; color:var(--green); background:var(--green-soft); font:500 8px ui-monospace,monospace; letter-spacing:.04em; text-transform:uppercase; white-space:nowrap; }
       .quality-details { border-color:#d3dfca; background:#f8fbf5; }.experiment-details { border-color:#94b685; background:#eaf4e5; }.experiment-details[open] summary { background:#e2f0dc; }
       .footer-note { margin:28px 0 0 66px; color:var(--muted); font-size:10px; line-height:1.5; }
-      @media (max-width:650px) { .shell { width:min(100% - 28px,620px); }.hero { padding-top:38px; }header { min-height:70px; }.stamp { font-size:10px; }.step { grid-template-columns:37px minmax(0,1fr); gap:11px; }.node { width:37px; height:37px; font-size:10px; }.step:not(:last-child)::before { left:18px; top:38px; }.step-card { padding:15px; }.step-head { display:block; }.step-head .badge { margin-top:9px; }.data-grid,.detail-grid { grid-template-columns:1fr; }.footer-note { margin-left:48px; } }
+      @media (max-width:650px) { .shell { width:min(100% - 28px,620px); }.hero { padding-top:38px; }header { min-height:70px; }.stamp { font-size:10px; }.prototype-grid { grid-template-columns:1fr; }.prototype-card.recommended { grid-column:auto; }.prototype-head { display:block; }.prototype-tags { justify-content:flex-start; margin-top:9px; }.step { grid-template-columns:37px minmax(0,1fr); gap:11px; }.node { width:37px; height:37px; font-size:10px; }.step:not(:last-child)::before { left:18px; top:38px; }.step-card { padding:15px; }.step-head { display:block; }.step-head .badge { margin-top:9px; }.data-grid,.detail-grid { grid-template-columns:1fr; }.footer-note { margin-left:48px; } }
     </style>
   </head>
   <body>
     <div class="shell">
       <header><div class="brand"><span class="brand-mark">↗</span><span>Tööprotsessi kaart</span></div><div id="stamp" class="stamp"></div></header>
       <main>
-        <section class="hero"><p class="eyebrow">TÖÖPROTSESSI AI-KAART</p><h1 id="map-title">Tööolukord</h1><p id="lede" class="lede"></p><p id="notice" class="notice"></p></section>
+        <section class="hero"><p class="eyebrow">TÖÖPROTSESSI AI-KAART</p><h1 id="map-title">Tööolukord</h1><p id="lede" class="lede"></p><p id="notice" class="notice"></p><section id="process-context" class="process-context" hidden><h2>Mida selle töö juures parandame?</h2><dl id="process-context-grid" class="detail-grid"></dl></section></section>
         <div class="legend" aria-label="AI sobivuse legend"><span><i class="dot"></i> Saab kohe proovida</span><span><i class="dot read"></i> Vajab lugemisligipääsu</span><span><i class="dot action"></i> Vajab tegevusõigust</span><span><i class="dot no"></i> Ei ole praegu AI-kandidaat</span></div>
+        <section id="prototype-section" aria-labelledby="prototype-heading" hidden><div class="section-heading"><div><p class="eyebrow">PROTOTÜÜBIIDEED</p><h2 id="prototype-heading">Üks koht, kust alustada</h2></div><span id="prototype-count" class="count"></span></div><div id="prototype-list" class="prototype-grid"></div></section>
         <section aria-labelledby="process-heading"><div class="section-heading"><div><p class="eyebrow">PROTSESSI SAMMUD</p><h2 id="process-heading">AI esmahinnang igas sammus</h2></div><span id="step-count" class="count"></span></div><ol id="timeline" class="timeline"></ol></section>
         <p class="footer-note">Kaart sisaldab ainult struktureeritud tööprotsessi andmeid. Seda ei avatud, jagatud ega salvestatud kuskile automaatselt.</p>
       </main>
@@ -68,7 +71,7 @@
     <script id="map-data" type="application/json">__TOOPROTSESSI_KAART_DATA__</script>
     <script>
       (() => {
-        const fallback = { schemaVersion:5, title:"Tööprotsessi AI-kaart", steps:[], notice:"Kaardi andmeid ei õnnestunud lugeda." };
+        const fallback = { schemaVersion:6, title:"Tööprotsessi AI-kaart", steps:[], prototypeIdeas:[], notice:"Kaardi andmeid ei õnnestunud lugeda." };
         let source = fallback;
         try { source = JSON.parse(document.getElementById("map-data").textContent); } catch (error) { console.error("Tööprotsessi kaardi andmete lugemine ebaõnnestus.", error); }
         const value = (input, fallbackText="Täpsustamisel") => input === undefined || input === null || String(input).trim() === "" ? fallbackText : String(input);
@@ -85,6 +88,11 @@
         };
         const implementationStatus = { soovitatud:"Soovitatud", voimalik:"Võimalik", ei_soovitata:"Ei soovitata", ei_kohaldu:"Ei kohaldu" };
         const implementationOrder = ["ai_chat", "connector_read", "connector_write", "deterministic"];
+        const prototypeType = { sammu_parendus:"Ühe sammu parendus", sammude_uhendus:"Ühendab samme", protsessi_umberkujundus:"Uus töökorraldus" };
+        const priorityStatus = { alusta_siist:"Alusta siit", jargmine:"Järgmine", hiljem:"Hiljem" };
+        const levelLabel = { korge:"Kõrge", keskmine:"Keskmine", madal:"Madal" };
+        const componentKind = { ai:"AI", deterministic:"Kindlad reeglid", connector:"Connector", human:"Inimene" };
+        const capabilityLabel = { read:"Lugemisõigus", write:"Tegevusõigus", approve:"Kinnitus", none:"Ühenduseta" };
         const benefitCategory = { kvaliteet:"Kvaliteet ja järjepidevus", aeg_toomaht:"Aja- või töömahu kokkuhoid", kulud:"Otseste kulude kokkuhoid", risk_umbertoe:"Vigade, ümbertöö või riski vähendamine", teenus:"Teenuse kiirus või kliendikogemus" };
         const qualityClass = { "Hea esimene AI-katse":"", "Sobib kontrollitud abiks":"checked", "Vajab paremat sisendit":"improve", "Ei sobi praegu selleks otsuseks":"stop" };
         const legacyOpportunity = (stepNumber) => (Array.isArray(source.opportunities) ? source.opportunities.find((item) => Number(item.step) === Number(stepNumber)) : null);
@@ -93,12 +101,23 @@
           const legacy = legacyOpportunity(step.number);
           return { ...step, aiAssessment:step.aiAssessment || (legacy ? { suitability:legacy.suitability, title:legacy.title, summary:legacy.description, accessNeed:legacy.accessNeed, humanCheck:legacy.humanCheck } : null), qualityAssessment:step.qualityAssessment || legacyDetailFor(step.number, "qualityAssessment"), experiment:step.experiment || legacyDetailFor(step.number, "experiment") };
         });
+        const prototypes = Array.isArray(source.prototypeIdeas) ? source.prototypeIdeas.filter((idea) => idea && typeof idea === "object") : [];
+        const recommendedPrototypeId = hasText(source.recommendedPrototypeId) ? String(source.recommendedPrototypeId) : "";
+        prototypes.sort((a,b) => Number(String(b.id) === recommendedPrototypeId) - Number(String(a.id) === recommendedPrototypeId));
+        const hasPortfolio = prototypes.length > 0;
         const dateValue = source.updatedAt || source.generatedAt || source.createdAt;
         if (dateValue) { const date = new Date(dateValue); document.getElementById("stamp").textContent = Number.isNaN(date.getTime()) ? String(dateValue) : `Viimati uuendatud ${date.toLocaleString("et-EE")}`; }
         document.title = `${value(source.title)} · Tööprotsessi kaart`;
         document.getElementById("map-title").textContent = value(source.title, "Tööprotsessi AI-kaart");
-        document.getElementById("lede").textContent = "Igal sammul on esmane AI-sobivuse hinnang ja lahendusvõrdlus: käsitsi AI-chat, lugemis- või tegevusõigusega connector ning deterministlik alternatiiv. Ava samm, et näha soovitust, põhjendust ja võimalikke töökorralduse alternatiive; pärast detailset arutelu kuvatakse ka oodatud kasu, mõõtmiskava, kvaliteedihinnang ja katse.";
+        document.getElementById("lede").textContent = hasPortfolio ? "Prototüübiideed ühendavad tööetapid, AI, kindlad reeglid, süsteemide ligipääsud ja inimese kontrolli üheks katsetatavaks tervikuks. Soovitatud idee on toodud esimesena." : "Igal sammul on esmane AI-sobivuse hinnang. Vanema kaardi lahendusvõrdlus jääb nähtavaks kuni järgmise kinnitatud uuenduseni.";
         document.getElementById("notice").textContent = value(source.notice, "Kaart põhineb kasutaja kirjeldusel; inimene kontrollib tulemust.");
+        renderProcessContext(source.processContext);
+        if (hasPortfolio) {
+          document.getElementById("prototype-section").hidden = false;
+          document.getElementById("prototype-count").textContent = `${prototypes.length} prototüübiideed`;
+          const prototypeList = document.getElementById("prototype-list");
+          empty(prototypeList); prototypes.forEach((prototype) => prototypeList.append(renderPrototype(prototype)));
+        }
         document.getElementById("step-count").textContent = `${steps.length} kaardistatud sammu`;
         const timeline = document.getElementById("timeline");
         empty(timeline);
@@ -122,12 +141,94 @@
           dataGrid.append(input, output); card.append(dataGrid);
           card.append(renderAssessment(assessment, label, className));
           const implementations = normalizeImplementationOptions(assessment);
-          if (implementations) card.append(renderImplementationOptions(assessment, implementations));
+          if (!hasPortfolio && implementations) card.append(renderImplementationOptions(assessment, implementations));
           if (hasBenefit(step.benefitHypothesis)) card.append(renderBenefit(step.benefitHypothesis));
           if (hasQuality(step.qualityAssessment)) card.append(renderQuality(step.qualityAssessment));
           if (hasExperiment(step.experiment)) card.append(renderExperiment(step.experiment));
           item.append(card);
           return item;
+        }
+
+        function renderProcessContext(context) {
+          if (!context || typeof context !== "object") return;
+          const rows = [
+            ["EESMÄRK",context.goal],
+            ["KÄIVITAJA",context.trigger],
+            ["LÕPPTULEMUS",context.outcome],
+            ["SAGEDUS VÕI MAHT",context.frequency],
+            ["VALUKOHAD",Array.isArray(context.painPoints) ? context.painPoints.join(" · ") : context.painPoints],
+            ["SÜSTEEMID",Array.isArray(context.systems) ? context.systems.join(" · ") : context.systems],
+            ["ANDMEPIIRANGUD",context.dataConstraints]
+          ].filter(([,fieldValue]) => hasText(fieldValue));
+          if (!rows.length) return;
+          const section = document.getElementById("process-context");
+          const grid = document.getElementById("process-context-grid");
+          empty(grid); rows.forEach(([label,fieldValue]) => appendDetail(grid,label,fieldValue));
+          section.hidden = false;
+        }
+
+        function renderPrototype(prototype) {
+          const isRecommended = String(prototype.id) === recommendedPrototypeId;
+          const priority = prototype.priorityAssessment && typeof prototype.priorityAssessment === "object" ? prototype.priorityAssessment : {};
+          const visibleStatus = isRecommended ? "alusta_siist" : priority.status === "alusta_siist" ? "jargmine" : priority.status;
+          const card = element("article", `prototype-card${isRecommended ? " recommended" : ""}`);
+          const head = element("div", "prototype-head");
+          head.append(element("h3", "", value(prototype.title, "Prototüübiidee")));
+          const tags = element("div", "prototype-tags");
+          tags.append(element("span", `prototype-badge${visibleStatus === "hiljem" ? " later" : ""}`, priorityStatus[visibleStatus] || "Võrdle"));
+          tags.append(element("span", "type-badge", prototypeType[prototype.type] || "Prototüübiidee"));
+          head.append(tags); card.append(head);
+          if (hasText(prototype.summary)) card.append(element("p", "prototype-summary", prototype.summary));
+          if (hasText(prototype.futureFlow)) card.append(element("p", "future-flow", prototype.futureFlow));
+
+          const details = element("details", "prototype-details");
+          const summary = element("summary");
+          summary.append(element("span", "summary-left", "Vaata ehitatavat visandit")); details.append(summary);
+          const body = element("div", "detail-body");
+          const overview = element("dl", "detail-grid");
+          const stepText = Array.isArray(prototype.stepNumbers) ? prototype.stepNumbers.map((number) => `Samm ${number}`).join(", ") : prototype.stepNumbers;
+          [["PRAEGUNE PROBLEEM",prototype.currentProblem],["SEOTUD SAMMUD",stepText],["KÄIVITAJA",prototype.trigger],["TULEMUS",prototype.outcome],["INIMESE KONTROLL",prototype.humanControl],["ERANDITEE",prototype.exceptionPath],["EELDUSED",prototype.conditions]].filter(([,fieldValue]) => hasText(fieldValue)).forEach(([label,fieldValue]) => appendDetail(overview,label,fieldValue));
+          body.append(overview);
+          if (Array.isArray(prototype.components) && prototype.components.length) body.append(renderComponents(prototype.components));
+          if (Object.keys(priority).length) {
+            const priorityGrid = element("dl", "detail-grid");
+            [["VÄÄRTUS",levelLabel[priority.value] || priority.value],["TEOSTATAVUS",levelLabel[priority.feasibility] || priority.feasibility],["RISK",levelLabel[priority.risk] || priority.risk],["ÕPPIMISVÄÄRTUS",levelLabel[priority.learningValue] || priority.learningValue],["MIKS SEE PRIORITEET",priority.rationale]].filter(([,fieldValue]) => hasText(fieldValue)).forEach(([label,fieldValue]) => appendDetail(priorityGrid,label,fieldValue));
+            body.append(priorityGrid);
+          }
+          details.append(body); card.append(details);
+          if (hasBenefit(prototype.benefitHypothesis)) card.append(renderBenefit(prototype.benefitHypothesis));
+          if (hasPrototypePlan(prototype.prototypePlan)) card.append(renderPrototypePlan(prototype.prototypePlan));
+          return card;
+        }
+
+        function renderComponents(components) {
+          const section = element("section", "components");
+          section.append(element("p", "components-heading", "Kuidas lahendus kokku pannakse"));
+          components.filter((component) => component && typeof component === "object").forEach((component) => {
+            const card = element("article", "component");
+            const head = element("div", "component-head");
+            head.append(element("h4", "", value(component.role, "Komponendi roll")), element("span", `component-badge ${component.kind || ""}`, componentKind[component.kind] || "Komponent"));
+            card.append(head);
+            const list = element("dl", "detail-grid");
+            [["SÜSTEEM",component.system],["VÕIMEKUS",capabilityLabel[component.capability] || component.capability],["TEHNOLOOGIA",component.technology],["VAJALIK ÕIGUS",component.access]].filter(([,fieldValue]) => hasText(fieldValue)).forEach(([label,fieldValue]) => appendDetail(list,label,fieldValue));
+            card.append(list); section.append(card);
+          });
+          return section;
+        }
+
+        function hasPrototypePlan(plan) {
+          return plan && typeof plan === "object" && [plan.hypothesis,plan.scope,plan.firstBuild,plan.successMetric].some(hasText);
+        }
+
+        function renderPrototypePlan(plan) {
+          const details = element("details", "prototype-plan");
+          const summary = element("summary");
+          summary.append(element("span", "summary-left", "Esimene ehitatav prototüüp")); details.append(summary);
+          const body = element("div", "detail-body");
+          if (hasText(plan.hypothesis)) body.append(element("p", "", plan.hypothesis));
+          const list = element("dl", "detail-grid");
+          [["PROTOTÜÜBI PIIR",plan.scope],["TESTANDMED VÕI -KESKKOND",plan.testData],["ESIMENE EHITUS",plan.firstBuild],["INIMESE KONTROLL",plan.humanCheck],["EDUKUSE MÕÕDIK",plan.successMetric],["KATKESTAMISKRITEERIUM",plan.stopCondition],["KÜSIMUS IT-LE VÕI JUHILE",plan.ownerQuestion]].filter(([,fieldValue]) => hasText(fieldValue)).forEach(([label,fieldValue]) => appendDetail(list,label,fieldValue));
+          body.append(list); details.append(body); return details;
         }
 
         function renderAssessment(assessment, label, className) {
