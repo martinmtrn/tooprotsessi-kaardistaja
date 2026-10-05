@@ -1,5 +1,12 @@
 # Muudatuste ajalugu
 
+## 0.7.0 — 2026-10-05
+
+- Lisatud `tutorial` töövoog, mis muudab Tööprotsessi kaardistaja HTML-kaardi
+  põhjal fiktiivse käed-küljes Claude Code'i kursuse stsenaariumi.
+- Tutorial klasterdab protsessisammud AI-sobivuse järgi, säilitab inimese
+  kontrollpunktid ning ei loo päris write-ühendusi ega kasuta kliendiandmeid.
+
 ## 0.6.0 — 2026-09-09
 
 - Sammupõhise lahendusvõrdluse asemel loob plugin 3–5 protsessiülest prototüübiideed ning tõstab ühe neist esile märgisega „Alusta siit”.

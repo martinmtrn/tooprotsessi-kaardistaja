@@ -6,6 +6,12 @@ prototüübid ning salvestada tulemuse iseseisva HTML-kaardina.
 See kasutab sinu olemasolevat Claude Code'i seanssi: plugin ei vaja API-võtit,
 ei käivita serverit ega tee võrgupäringuid.
 
+Pluginis on kaks järjestikust töövoogu:
+
+1. `kaardista` teeb ühest tööolukorrast HTML-kaardi.
+2. `tutorial` muudab kinnitatud kaardi põhjal fiktiivse käed-küljes kursuse
+   stsenaariumi, mida saab läbida `/start-X-Y` käskudega.
+
 ## Paigaldamine
 
 Claude Code'is lisa kõigepealt marketplace ja paigalda plugin:
@@ -26,6 +32,23 @@ Soovi korral lisa kohe lühikirjeldus:
 ```text
 /tooprotsessi-kaardistaja:kaardista Kliendi päring saabub e-postiga, kontrollin CRM-ist tausta ja koostan vastuse.
 ```
+
+## Kaardist tutorialiks
+
+Kui HTML-kaart on loodud, anna selle absoluutne tee järgmisele töövoole:
+
+```text
+/tooprotsessi-kaardistaja:tutorial /täistee/minu-tooprotsessi-kaart.html
+```
+
+Töövoog loeb ainult kaardi struktureeritud `map-data` JSON-i, pakub
+protsessisammude põhjal tundide klastrid ja küsib enne kirjutamist kinnitust
+kursuse täpsele väljundkaustale. See loob fiktiivse stsenaariumi ning ei kopeeri
+kaardilt päris kliendi- või isikuandmeid. `tegevusoigus` sammud jäävad
+tutorialis mustandi või sandboxi tasemele, inimese kinnitusega.
+
+Loodud kursuse avamiseks kasuta Cursorit või VS Code'i, käivita selles kaustas
+`claude` ning alusta käsuga `/start-1-1`.
 
 ## Kuidas see töötab
 

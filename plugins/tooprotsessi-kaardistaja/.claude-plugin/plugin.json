@@ -2,8 +2,8 @@
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "tooprotsessi-kaardistaja",
   "displayName": "Tööprotsessi kaardistaja",
-  "version": "0.6.0",
-  "description": "Eestikeelne tööprotsessi kaart protsessiüleste AI, integratsiooni ja deterministliku automatiseerimise prototüüpidega.",
+  "version": "0.7.0",
+  "description": "Eestikeelne tööprotsessi kaart ning selle põhjal loodav käed-küljes Claude Code'i tutorial.",
   "author": {
     "name": "martinmtrn"
   },
