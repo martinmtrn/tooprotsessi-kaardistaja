@@ -1,0 +1,730 @@
+<!doctype html>
+<html lang="et">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Tööprotsessi AI-kaart" />
+    <title>Tööprotsessi AI-kaart</title>
+    <style>
+      :root { --ink:#17231f; --muted:#617068; --line:#d9dfd9; --paper:#f8f8f4; --card:#fffefa; --green:#165c42; --green-soft:#dce9d5; --gold:#79572b; --gold-soft:#f5ead0; --orange:#874127; --orange-soft:#f8dfd3; --grey:#647069; --grey-soft:#e9edeb; }
+      * { box-sizing:border-box; }
+      body { margin:0; color:var(--ink); background:radial-gradient(circle at 7% 0%,#e6eee0 0,transparent 32rem),var(--paper); font-family:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+      .shell { width:min(1060px,calc(100% - 40px)); margin:0 auto; padding-bottom:64px; }
+      header { display:flex; align-items:center; justify-content:space-between; gap:24px; min-height:92px; border-bottom:1px solid var(--line); }
+      .brand { display:flex; align-items:center; gap:10px; font-size:15px; font-weight:800; letter-spacing:-.03em; }
+      .brand-mark { display:grid; place-items:center; width:28px; height:28px; border-radius:9px 9px 9px 2px; color:#fff; background:var(--green); font:500 12px ui-monospace,monospace; }
+      .stamp { color:var(--muted); font-size:12px; font-weight:700; text-align:right; }
+      .hero { padding:50px 0 34px; }
+      .eyebrow { margin:0 0 12px; color:var(--green); font:500 10px/1.1 ui-monospace,monospace; letter-spacing:.1em; }
+      h1,h2,h3,p { margin-top:0; }
+      h1 { max-width:790px; margin-bottom:12px; font:700 clamp(34px,5vw,58px)/.98 Georgia,"Times New Roman",serif; letter-spacing:-.05em; }
+      h2 { margin:0; font:700 20px/1.1 Georgia,"Times New Roman",serif; letter-spacing:-.035em; }
+      h3 { margin:0; font-size:14px; line-height:1.35; letter-spacing:-.02em; }
+      .lede,.notice,.empty { color:var(--muted); font-size:13px; line-height:1.6; }
+      .notice { margin:24px 0 0; padding:12px 15px; border-left:3px solid #8eae7c; background:#f1f4ed; }
+      .process-context { margin-top:14px; padding:15px; border:1px solid #dbe1d9; border-radius:5px; background:rgba(255,254,250,.75); }.process-context h2 { margin-bottom:8px; font-size:16px; }.process-context .detail-grid dt { margin-top:7px; }
+      .legend { display:flex; flex-wrap:wrap; gap:8px 14px; padding:16px 0 22px; border-bottom:1px solid var(--line); color:var(--muted); font-size:11px; }
+      .legend span { display:flex; align-items:center; gap:6px; }
+      .dot { width:9px; height:9px; border-radius:50%; background:var(--green); }
+      .dot.read { background:#b58632; }.dot.action { background:#c56745; }.dot.no { background:#84908a; }
+      .section-heading { display:flex; justify-content:space-between; align-items:end; gap:16px; padding:30px 0 20px; }
+      .count { color:var(--muted); font-size:11px; font-weight:700; white-space:nowrap; }
+      .timeline { margin:0; padding:0; list-style:none; }
+      .step { position:relative; display:grid; grid-template-columns:48px minmax(0,1fr); gap:18px; padding-bottom:18px; }
+      .step:not(:last-child)::before { content:""; position:absolute; left:22px; top:46px; bottom:-2px; width:2px; background:#b7c8ad; }
+      .node { position:relative; z-index:1; display:grid; place-items:center; width:46px; height:46px; border:1px solid #cbdac1; border-radius:50%; color:var(--green); background:#fff; font:500 12px ui-monospace,monospace; }
+      .step-card { padding:19px; border:1px solid #dbe1d9; border-radius:5px; background:var(--card); box-shadow:0 10px 30px rgba(26,47,37,.05); }
+      .step-head { display:flex; justify-content:space-between; align-items:flex-start; gap:14px; }
+      .step-meta { margin:5px 0 14px; color:#68776d; font-size:11px; line-height:1.45; }
+      .data-grid { display:grid; grid-template-columns:1fr 1fr; gap:9px; margin:0 0 15px; }
+      .data-item { padding:9px 10px; border-left:2px solid #b7c8ad; background:#f4f7f1; color:#405148; font-size:11px; line-height:1.45; }
+      .data-item b,dt { display:block; margin-bottom:3px; color:#6a7a70; font:500 8px ui-monospace,monospace; letter-spacing:.05em; text-transform:uppercase; }
+      .badge { display:inline-block; padding:5px 7px; border-radius:2px; color:var(--green); background:#e4efe0; font:500 8px ui-monospace,monospace; letter-spacing:.04em; text-transform:uppercase; white-space:nowrap; }
+      .badge.read,.quality-badge.checked { color:var(--gold); background:var(--gold-soft); }.badge.action,.quality-badge.improve { color:var(--orange); background:var(--orange-soft); }.badge.no,.quality-badge.stop { color:var(--grey); background:var(--grey-soft); }
+      .prototype-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:13px; margin-bottom:8px; }.prototype-card { padding:17px; border:1px solid #d5ddd4; border-radius:5px; background:#fffefa; box-shadow:0 10px 30px rgba(26,47,37,.05); }.prototype-card.recommended { grid-column:1/-1; border:2px solid #7ca268; background:linear-gradient(145deg,#f1f8ec,#fffefa 58%); }.prototype-head { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }.prototype-head h3 { font-size:16px; }.prototype-tags { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:5px; }.prototype-badge,.type-badge,.component-badge { display:inline-block; padding:5px 7px; border-radius:2px; font:500 8px ui-monospace,monospace; letter-spacing:.04em; text-transform:uppercase; white-space:nowrap; }.prototype-badge { color:var(--green); background:var(--green-soft); }.prototype-badge.later { color:var(--grey); background:var(--grey-soft); }.type-badge { color:var(--gold); background:var(--gold-soft); }.prototype-summary { margin:9px 0 11px; color:#4f5f56; font-size:12px; line-height:1.55; }.future-flow { margin:0 0 11px; padding:10px 11px; border-left:3px solid #7ca268; background:#edf5e9; color:#2e493b; font-size:11px; font-weight:700; line-height:1.55; white-space:pre-wrap; }.prototype-details { border-color:#cddbc5; }.components { display:grid; gap:7px; margin-top:13px; }.components-heading { margin:0; color:var(--green); font:500 9px/1.35 ui-monospace,monospace; letter-spacing:.07em; text-transform:uppercase; }.component { padding:10px; border-left:2px solid #8eae7c; background:#f5f8f2; }.component-head { display:flex; align-items:flex-start; justify-content:space-between; gap:8px; }.component h4 { margin:0 0 5px; color:#304138; font-size:11px; }.component p { margin:0 0 6px; color:#56665d; font-size:10px; line-height:1.45; }.component-badge.ai { color:#315c87; background:#e2edf7; }.component-badge.deterministic { color:#5b481e; background:#f4e8c8; }.component-badge.connector { color:var(--orange); background:var(--orange-soft); }.component-badge.human { color:var(--green); background:var(--green-soft); }.prototype-plan { border-color:#7ca268; background:#edf5e9; }.prototype-plan[open] summary { background:#e3f0dd; }
+      details { overflow:hidden; border:1px solid #dbe1d9; border-radius:4px; background:#fff; }
+      details + details { margin-top:9px; }
+      summary { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 13px; cursor:pointer; list-style:none; color:#304138; font-size:12px; font-weight:800; }
+      summary::-webkit-details-marker { display:none; }
+      summary::after { content:"⌄"; color:var(--green); font-size:17px; line-height:1; }.summary-left { display:flex; align-items:center; gap:9px; min-width:0; }.summary-label { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+      details[open] summary { border-bottom:1px solid #e4e9e3; background:#f5f8f2; }.detail-body { padding:13px; }.detail-body > p { margin:0 0 10px; color:#56665d; font-size:11px; line-height:1.55; }
+      dl { margin:0; }.detail-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:0 16px; }.detail-grid dt { margin-top:10px; }.detail-grid dd { margin:2px 0 0; color:#405148; font-size:10px; line-height:1.45; white-space:pre-wrap; }
+      .solution-details { margin-top:9px; border-color:#b7c8ad; background:#f8fbf5; }.solution-details[open] summary { background:#edf5e9; }.solution-badge { display:inline-block; padding:5px 7px; border-radius:2px; color:var(--green); background:var(--green-soft); font:500 8px ui-monospace,monospace; letter-spacing:.04em; text-transform:uppercase; white-space:nowrap; }.solution-badge.deterministic { color:#5b481e; background:#f4e8c8; }.solution-intro { margin:0 0 12px; color:#405148; font-size:11px; line-height:1.55; }.solution-options { display:grid; gap:8px; }.solution-option { padding:11px; border-left:2px solid #b7c8ad; background:#fff; }.solution-option.recommended { border-left-width:4px; border-color:var(--green); background:#f1f7ed; }.solution-option.not-recommended { border-color:#c9d0cc; background:#fafbfa; }.solution-option h4 { margin:0 0 5px; color:#304138; font-size:11px; line-height:1.4; }.solution-option p { margin:0 0 8px; color:#56665d; font-size:11px; line-height:1.5; white-space:pre-wrap; }.option-head { display:flex; align-items:flex-start; justify-content:space-between; gap:9px; }.option-status { flex:0 0 auto; color:#617068; font:500 8px/1.2 ui-monospace,monospace; letter-spacing:.05em; text-transform:uppercase; }.solution-option.recommended .option-status { color:var(--green); }.solution-option.not-recommended .option-status { color:#68776d; }
+      .change-ideas { margin-top:15px; padding-top:13px; border-top:1px solid #e4e9e3; }.change-ideas-heading { margin:0 0 9px; color:var(--green); font:500 9px/1.35 ui-monospace,monospace; letter-spacing:.07em; text-transform:uppercase; }.change-idea { margin-top:8px; padding:11px; border-left:2px solid #8eae7c; background:#f4f7f1; }.change-idea:first-of-type { margin-top:0; }.change-idea h4 { margin:0 0 5px; color:#304138; font-size:11px; line-height:1.4; }.change-idea p { margin:0 0 8px; color:#56665d; font-size:11px; line-height:1.5; white-space:pre-wrap; }
+      .benefit-details { border-color:#b7c8ad; background:#f8fbf5; }.benefit-details[open] summary { background:#edf5e9; }.benefit-badge { display:inline-block; padding:5px 7px; border-radius:2px; color:var(--green); background:var(--green-soft); font:500 8px ui-monospace,monospace; letter-spacing:.04em; text-transform:uppercase; white-space:nowrap; }
+      .quality-details { border-color:#d3dfca; background:#f8fbf5; }.experiment-details { border-color:#94b685; background:#eaf4e5; }.experiment-details[open] summary { background:#e2f0dc; }
+      .footer-note { margin:28px 0 0 66px; color:var(--muted); font-size:10px; line-height:1.5; }
+      .next-step { margin:0 0 6px; padding:17px; border:2px solid #7ca268; border-radius:5px; background:linear-gradient(145deg,#f1f8ec,#fffefa 58%); }.next-step h2 { margin-bottom:6px; font-size:17px; }.next-step p { margin:0 0 11px; color:#4f5f56; font-size:12px; line-height:1.55; }.next-step .hint { margin:9px 0 0; color:var(--muted); font-size:10px; }.next-step-row { display:flex; align-items:stretch; gap:9px; }.next-step code { flex:1; min-width:0; padding:10px 11px; border-left:3px solid #7ca268; background:#edf5e9; color:#2e493b; font:500 11px/1.55 ui-monospace,monospace; overflow-wrap:anywhere; user-select:all; }.next-step button { flex:0 0 auto; padding:0 14px; border:0; border-radius:3px; color:#fff; background:var(--green); font:700 11px ui-sans-serif,-apple-system,sans-serif; cursor:pointer; }.next-step button:hover { background:#10472f; }
+      @media (max-width:650px) { .next-step-row { flex-direction:column; }.next-step button { padding:10px 14px; } }
+      @media (max-width:650px) { .shell { width:min(100% - 28px,620px); }.hero { padding-top:38px; }header { min-height:70px; }.stamp { font-size:10px; }.prototype-grid { grid-template-columns:1fr; }.prototype-card.recommended { grid-column:auto; }.prototype-head { display:block; }.prototype-tags { justify-content:flex-start; margin-top:9px; }.step { grid-template-columns:37px minmax(0,1fr); gap:11px; }.node { width:37px; height:37px; font-size:10px; }.step:not(:last-child)::before { left:18px; top:38px; }.step-card { padding:15px; }.step-head { display:block; }.step-head .badge { margin-top:9px; }.data-grid,.detail-grid { grid-template-columns:1fr; }.footer-note { margin-left:48px; } }
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <header><div class="brand"><span class="brand-mark">↗</span><span>Tööprotsessi kaart</span></div><div id="stamp" class="stamp"></div></header>
+      <main>
+        <section class="hero"><p class="eyebrow">TÖÖPROTSESSI AI-KAART</p><h1 id="map-title">Tööolukord</h1><p id="lede" class="lede"></p><p id="notice" class="notice"></p><section id="process-context" class="process-context" hidden><h2>Mida selle töö juures parandame?</h2><dl id="process-context-grid" class="detail-grid"></dl></section></section>
+        <section id="next-step" class="next-step" aria-labelledby="next-step-heading" hidden><p class="eyebrow">MIS EDASI?</p><h2 id="next-step-heading"></h2><p id="next-step-text"></p><div class="next-step-row"><code id="next-step-command"></code><button id="next-step-copy" type="button">Kopeeri</button></div><p id="next-step-hint" class="hint" hidden></p></section>
+        <div class="legend" aria-label="AI sobivuse legend"><span><i class="dot"></i> Saab kohe proovida</span><span><i class="dot read"></i> Vajab lugemisligipääsu</span><span><i class="dot action"></i> Vajab tegevusõigust</span><span><i class="dot no"></i> Ei ole praegu AI-kandidaat</span></div>
+        <section id="prototype-section" aria-labelledby="prototype-heading" hidden><div class="section-heading"><div><p class="eyebrow">PROTOTÜÜBIIDEED</p><h2 id="prototype-heading">Üks koht, kust alustada</h2></div><span id="prototype-count" class="count"></span></div><div id="prototype-list" class="prototype-grid"></div></section>
+        <section aria-labelledby="process-heading"><div class="section-heading"><div><p class="eyebrow">PROTSESSI SAMMUD</p><h2 id="process-heading">AI esmahinnang igas sammus</h2></div><span id="step-count" class="count"></span></div><ol id="timeline" class="timeline"></ol></section>
+        <p class="footer-note">Kaart sisaldab ainult struktureeritud tööprotsessi andmeid. Seda ei avatud, jagatud ega salvestatud kuskile automaatselt.</p>
+      </main>
+    </div>
+    <script id="map-data" type="application/json">{
+  "schemaVersion": 6,
+  "title": "Kliendipäringule vastamine (näidiskaart)",
+  "createdAt": "2026-10-28T12:00:00+02:00",
+  "updatedAt": "2026-10-28T12:00:00+02:00",
+  "notice": "Näidiskaart väljamõeldud ettevõtte Pisipood OÜ kohta. Kõik nimed ja andmed on fiktiivsed; inimene kontrollib tulemust.",
+  "processContext": {
+    "goal": "Klient saab õige ja viisaka vastuse samal tööpäeval ning töötaja ei kopeeri infot mitme faili vahel.",
+    "trigger": "Klient saadab e-posti teel küsimuse tellimuse, tarne või tagastuse kohta.",
+    "outcome": "Kliendile on saadetud kontrollitud vastus ja päring on märgitud lahendatuks.",
+    "frequency": "Umbes 25 päringut päevas, kõige rohkem esmaspäeviti.",
+    "painPoints": [
+      "Tellimuse andmeid otsitakse käsitsi Exceli kliendiregistrist",
+      "Sarnastele küsimustele kirjutatakse vastus iga kord uuesti",
+      "Tagastuse tingimusi kontrollitakse mälu järgi"
+    ],
+    "systems": [
+      "Outlook",
+      "Excel kliendiregister"
+    ],
+    "dataConstraints": "Kliendi nime ja tellimuse andmeid ei tohi sisestada avalikesse tööriistadesse; katsetes kasutatakse väljamõeldud näiteid.",
+    "tools": [
+      "Outlook",
+      "Excel",
+      "Claude"
+    ],
+    "toolLimits": "Ettevõtte AI-reegel lubab Claude'i kasutada ainult anonüümitud näidetega; töötajatel ei ole paigaldusõigust."
+  },
+  "recommendedPrototypeId": "P1",
+  "prototypeIdeas": [
+    {
+      "id": "P1",
+      "title": "Päringu vastuse mustandi abiline",
+      "type": "sammude_uhendus",
+      "summary": "Kiri, tellimuse otsing, tagastusreegel ja vastuse mustand liiguvad üheks kontrollitavaks vooguks; töötaja kontrollib ja saadab vastuse ise.",
+      "stepNumbers": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "currentProblem": "Töötaja kopeerib tellimuse andmed käsitsi registrist ja kirjutab sarnase vastuse iga kord uuesti.",
+      "futureFlow": "Uus kiri → AI tuvastab päringu liigi ja tellimuse numbri → tellimuse lugemine registrist → tagastustähtaja valem → AI vastuse mustand → töötaja kontrollib → mustand Outlooki",
+      "trigger": "Uus kiri jõuab klienditoe postkasti.",
+      "outcome": "Kontrollitud vastuse mustand on Outlookis valmis.",
+      "components": [
+        {
+          "kind": "ai",
+          "role": "Tuvastab päringu liigi ja tellimuse numbri ning koostab vastuse mustandi.",
+          "system": "Claude",
+          "capability": "none",
+          "technology": "Claude vestluses",
+          "access": "Ainult anonüümitud näidiskirjad"
+        },
+        {
+          "kind": "connector",
+          "role": "Loeb tellimuse oleku kliendiregistrist.",
+          "system": "Excel kliendiregister",
+          "capability": "read",
+          "technology": "Excel",
+          "access": "Lugemisõigus registri koopiale"
+        },
+        {
+          "kind": "deterministic",
+          "role": "Arvutab, kas tagastustähtaeg (14 päeva) on täis.",
+          "system": "Excel",
+          "capability": "none",
+          "technology": "Exceli valem",
+          "access": "Ainult tellimuse kuupäev"
+        },
+        {
+          "kind": "human",
+          "role": "Kontrollib mustandi faktid registriga ja saadab vastuse ise.",
+          "system": "Outlook",
+          "capability": "approve",
+          "technology": "Olemasolev Outlook",
+          "access": "Töötaja tavapärane tööõigus"
+        },
+        {
+          "kind": "connector",
+          "role": "Salvestab kinnitatud vastuse mustandina.",
+          "system": "Outlook",
+          "capability": "write",
+          "technology": "Outlooki mustandite kaust",
+          "access": "Ainult mustandite kausta kirjutamine"
+        }
+      ],
+      "humanControl": "Töötaja loeb mustandi läbi ja võrdleb faktid registriga enne saatmist.",
+      "exceptionPath": "Kui tellimust ei leita või päring pole selge, jääb kiri töötajale käsitsi vastamiseks.",
+      "conditions": "Registri koopia kasutamine ja AI kasutus anonüümitud andmetega tuleb IT-ga kokku leppida.",
+      "priorityAssessment": {
+        "value": "korge",
+        "feasibility": "keskmine",
+        "risk": "madal",
+        "learningValue": "korge",
+        "status": "alusta_siist",
+        "rationale": "Kontrollib kõige suurema väärtusega eeldust (kas mustand on kasutatav) ja ei saada midagi ise välja."
+      },
+      "benefitHypothesis": {
+        "primaryBenefit": {
+          "category": "aeg_toomaht",
+          "label": "Aja- või töömahu kokkuhoid"
+        },
+        "secondaryBenefit": {
+          "category": "kvaliteet",
+          "label": "Kvaliteet ja järjepidevus"
+        },
+        "userRationale": "Registris otsimine ja vastuse kirjutamine võtavad praegu suurema osa ühe päringu ajast.",
+        "measurement": {
+          "metric": "Minutid ühe päringu kohta",
+          "baseline": "Mõõta esimeses väikeses katses",
+          "target": "Vähem käsitööd kui praegu",
+          "sample": "10 anonüümitud näidispäringut",
+          "method": "Töötaja mõõdab aega mustandiga ja ilma ning hindab mustandi kasutatavust"
+        }
+      },
+      "prototypePlan": {
+        "hypothesis": "Kas AI koostab kontrollitud faktide põhjal vastuse mustandi, mida töötaja saab kasutada väikeste parandustega?",
+        "scope": "Üks päringuliik (tarne) ja 10 anonüümitud näidiskirja; saatmine ja registrisse kirjutamine jäävad välja.",
+        "testData": "10 väljamõeldud kirja koos väljamõeldud tellimuse ridadega.",
+        "firstBuild": "Korduvkasutatav prompt ja Exceli valem tagastustähtaja kontrolliks.",
+        "humanCheck": "Töötaja hindab iga mustandi: kasutatav, vajab parandust või ei sobi.",
+        "successMetric": "Vähemalt 7 mustandit 10-st on kasutatavad väikeste parandustega.",
+        "stopCondition": "Mustandid sisaldavad korduvalt väljamõeldud fakte või vajavad rohkem aega kui käsitsi vastamine.",
+        "ownerQuestion": "Kas anonüümitud näidiskirju tohib Claude'is kasutada?"
+      }
+    },
+    {
+      "id": "P2",
+      "title": "Vastuse mustandi prompt",
+      "type": "sammu_parendus",
+      "summary": "Ainult vastuse kirjutamise samm: töötaja kleebib kontrollitud faktid ja päringu promptiga vestlusesse ning saab mustandi.",
+      "stepNumbers": [
+        4
+      ],
+      "currentProblem": "Sarnastele küsimustele kirjutatakse vastus iga kord uuesti.",
+      "futureFlow": "Päring ja kontrollitud faktid → prompt → AI mustand → töötaja kontroll",
+      "trigger": "Töötaja on faktid kontrollinud.",
+      "outcome": "Vastuse mustand on valmis kopeerimiseks.",
+      "components": [
+        {
+          "kind": "ai",
+          "role": "Koostab vastuse mustandi antud faktide põhjal.",
+          "system": "Claude",
+          "capability": "none",
+          "technology": "Claude vestluses",
+          "access": "Ainult anonüümitud näited"
+        },
+        {
+          "kind": "human",
+          "role": "Kontrollib ja parandab mustandi.",
+          "system": "Outlook",
+          "capability": "approve",
+          "technology": "Olemasolev Outlook",
+          "access": "Töötaja tavapärane tööõigus"
+        }
+      ],
+      "humanControl": "Töötaja loeb mustandi enne kopeerimist läbi.",
+      "exceptionPath": "Ebakindel või ebatavaline päring vastatakse käsitsi.",
+      "conditions": "AI kasutus anonüümitud näidetega on ettevõtte reegliga kooskõlas.",
+      "priorityAssessment": {
+        "value": "keskmine",
+        "feasibility": "korge",
+        "risk": "madal",
+        "learningValue": "keskmine",
+        "status": "jargmine",
+        "rationale": "Kiire ja ohutu, kuid ei vähenda registris otsimise käsitööd."
+      },
+      "benefitHypothesis": null,
+      "prototypePlan": null
+    },
+    {
+      "id": "P3",
+      "title": "Päringuvorm tellimuse numbriga",
+      "type": "protsessi_umberkujundus",
+      "summary": "Klient annab tellimuse numbri ja päringu liigi vormis, nii et kirja lugemise ja otsimise sammud kaovad.",
+      "stepNumbers": [
+        1,
+        2
+      ],
+      "currentProblem": "Töötaja loeb vabateksti seest välja tellimuse numbri ja päringu liigi.",
+      "futureFlow": "Klient täidab vormi → kohustuslikud väljad kontrollitakse → töötaja saab valmis päringu",
+      "trigger": "Klient vajab abi tellimusega.",
+      "outcome": "Töötaja saab struktureeritud päringu ilma kirja lahtiseletamata.",
+      "components": [
+        {
+          "kind": "deterministic",
+          "role": "Kogub kohustuslikud väljad ja kontrollib täielikkust.",
+          "system": "Veebivorm (täpsustada)",
+          "capability": "none",
+          "technology": "Täpsustada",
+          "access": "Ainult vormi väljad"
+        },
+        {
+          "kind": "human",
+          "role": "Vastab struktureeritud päringule.",
+          "system": "Outlook",
+          "capability": "approve",
+          "technology": "Olemasolev Outlook",
+          "access": "Töötaja tavapärane tööõigus"
+        }
+      ],
+      "humanControl": "Töötaja vaatab iga päringu enne vastamist üle.",
+      "exceptionPath": "Vormi mittekasutav klient saab endiselt kirjutada e-posti teel.",
+      "conditions": "Veebivormi tegemine vajab IT või veebihalduri abi.",
+      "priorityAssessment": {
+        "value": "korge",
+        "feasibility": "madal",
+        "risk": "madal",
+        "learningValue": "keskmine",
+        "status": "hiljem",
+        "rationale": "Suur pikaajaline kasu, kuid vajab muudatust kliendi poolel ja IT abi."
+      },
+      "benefitHypothesis": null,
+      "prototypePlan": null
+    }
+  ],
+  "steps": [
+    {
+      "number": 1,
+      "action": "Loen sissetulnud kliendi e-kirja",
+      "actorSystem": "Klienditoe töötaja",
+      "inputSource": "Outlooki postkast: uus kiri",
+      "informationOutput": "Päringu sisu ja tellimuse number",
+      "category": "info otsimine",
+      "aiAssessment": {
+        "suitability": "kohe",
+        "title": "Päringu liigi tuvastamine",
+        "summary": "AI saab kirjast tuvastada päringu liigi (tarne, tagastus, muu) ja tellimuse numbri.",
+        "accessNeed": "Käsitsi antud anonüümitud näidiskiri.",
+        "humanCheck": "Töötaja kontrollib, et liik ja number on õiged."
+      },
+      "benefitHypothesis": null,
+      "qualityAssessment": null,
+      "experiment": null
+    },
+    {
+      "number": 2,
+      "action": "Otsin tellimuse Exceli kliendiregistrist",
+      "actorSystem": "Klienditoe töötaja",
+      "inputSource": "Tellimuse number; Excel kliendiregister",
+      "informationOutput": "Tellimuse olek ja tarneinfo",
+      "category": "info otsimine",
+      "aiAssessment": {
+        "suitability": "lugemine",
+        "title": "Tellimuse otsing registrist",
+        "summary": "Tellimuse olek tuleb registrist lugeda; AI ei tohi seda ise oletada.",
+        "accessNeed": "Lugemisõigus kliendiregistri koopiale.",
+        "humanCheck": "Töötaja kontrollib, et leitud tellimus kuulub õigele kliendile."
+      },
+      "benefitHypothesis": null,
+      "qualityAssessment": null,
+      "experiment": null
+    },
+    {
+      "number": 3,
+      "action": "Kontrollin tagastuse tingimusi",
+      "actorSystem": "Klienditoe töötaja",
+      "inputSource": "Tagastuspoliitika dokument; tellimuse kuupäev",
+      "informationOutput": "Tagastus on lubatud või ei ole",
+      "category": "kontroll",
+      "aiAssessment": {
+        "suitability": "ei_sobi",
+        "title": "Kindel reegel, mitte AI otsus",
+        "summary": "Tagastustähtaeg on kindel reegel (14 päeva); sellele sobib valem, mitte AI hinnang.",
+        "accessNeed": "Tellimuse kuupäev.",
+        "humanCheck": "Töötaja vaatab erandjuhud ise üle."
+      },
+      "benefitHypothesis": null,
+      "qualityAssessment": null,
+      "experiment": null
+    },
+    {
+      "number": 4,
+      "action": "Koostan vastuse kliendile",
+      "actorSystem": "Klienditoe töötaja",
+      "inputSource": "Päringu sisu; tellimuse olek; varasemad sarnased vastused",
+      "informationOutput": "Vastuse mustand",
+      "category": "sisuloome",
+      "aiAssessment": {
+        "suitability": "kohe",
+        "title": "Vastuse mustand",
+        "summary": "AI koostab viisaka vastuse mustandi kontrollitud faktide põhjal.",
+        "accessNeed": "Anonüümitud näidispäringud ja varasemad vastused.",
+        "humanCheck": "Töötaja loeb mustandi läbi ja parandab enne saatmist."
+      },
+      "benefitHypothesis": null,
+      "qualityAssessment": null,
+      "experiment": null
+    },
+    {
+      "number": 5,
+      "action": "Saadan vastuse kliendile",
+      "actorSystem": "Klienditoe töötaja",
+      "inputSource": "Kinnitatud vastus; Outlook",
+      "informationOutput": "Saadetud vastus",
+      "category": "koordineerimine",
+      "aiAssessment": {
+        "suitability": "tegevusoigus",
+        "title": "Saatmine on tagasivõtmatu tegevus",
+        "summary": "Esimeses katses piirdub AI mustandi salvestamisega; saatmise teeb inimene.",
+        "accessNeed": "Outlooki mustandite kausta kirjutusõigus.",
+        "humanCheck": "Töötaja vajutab ise Saada."
+      },
+      "benefitHypothesis": null,
+      "qualityAssessment": null,
+      "experiment": null
+    },
+    {
+      "number": 6,
+      "action": "Märgin päringu lahendatuks",
+      "actorSystem": "Klienditoe töötaja",
+      "inputSource": "Saadetud vastus",
+      "informationOutput": "Staatus Excelis",
+      "category": "andmete sisestamine",
+      "aiAssessment": {
+        "suitability": "tegevusoigus",
+        "title": "Staatuse märkimine",
+        "summary": "Staatuse kirjutamine registrisse vajab kirjutusõigust ja inimese kinnitust; esimeses katses jääb käsitsi tehtavaks.",
+        "accessNeed": "Registri kirjutusõigus (esimeses katses puudub).",
+        "humanCheck": "Töötaja märgib staatuse ise."
+      },
+      "benefitHypothesis": null,
+      "qualityAssessment": null,
+      "experiment": null
+    }
+  ]
+}</script>
+    <script>
+      (() => {
+        const fallback = { schemaVersion:6, title:"Tööprotsessi AI-kaart", steps:[], prototypeIdeas:[], notice:"Kaardi andmeid ei õnnestunud lugeda." };
+        let source = fallback;
+        try { source = JSON.parse(document.getElementById("map-data").textContent); } catch (error) { console.error("Tööprotsessi kaardi andmete lugemine ebaõnnestus.", error); }
+        const value = (input, fallbackText="Täpsustamisel") => input === undefined || input === null || String(input).trim() === "" ? fallbackText : String(input);
+        const hasText = (input) => input !== undefined && input !== null && String(input).trim() !== "";
+        const empty = (node) => { while (node.firstChild) node.removeChild(node.firstChild); };
+        const element = (tag, className, text) => { const node = document.createElement(tag); if (className) node.className = className; if (text !== undefined) node.textContent = text; return node; };
+        const appendDetail = (parent, label, text) => parent.append(element("dt", "", label), element("dd", "", value(text)));
+        const suitability = { kohe:["Saab kohe proovida", ""], lugemine:["Vajab lugemisligipääsu", "read"], tegevusoigus:["Vajab tegevusõigust", "action"], ei_sobi:["Ei ole praegu AI-kandidaat", "no"] };
+        const implementationKind = {
+          ai_chat:"AI-chat käsitsi",
+          connector_read:"Connector: lugemisõigus",
+          connector_write:"Connector: tegevusõigus",
+          deterministic:"Deterministlik lahendus"
+        };
+        const implementationStatus = { soovitatud:"Soovitatud", voimalik:"Võimalik", ei_soovitata:"Ei soovitata", ei_kohaldu:"Ei kohaldu" };
+        const implementationOrder = ["ai_chat", "connector_read", "connector_write", "deterministic"];
+        const prototypeType = { sammu_parendus:"Ühe sammu parendus", sammude_uhendus:"Ühendab samme", protsessi_umberkujundus:"Uus töökorraldus" };
+        const priorityStatus = { alusta_siist:"Alusta siit", jargmine:"Järgmine", hiljem:"Hiljem" };
+        const levelLabel = { korge:"Kõrge", keskmine:"Keskmine", madal:"Madal" };
+        const componentKind = { ai:"AI", deterministic:"Kindlad reeglid", connector:"Connector", human:"Inimene" };
+        const capabilityLabel = { read:"Lugemisõigus", write:"Tegevusõigus", approve:"Kinnitus", none:"Ühenduseta" };
+        const benefitCategory = { kvaliteet:"Kvaliteet ja järjepidevus", aeg_toomaht:"Aja- või töömahu kokkuhoid", kulud:"Otseste kulude kokkuhoid", risk_umbertoe:"Vigade, ümbertöö või riski vähendamine", teenus:"Teenuse kiirus või kliendikogemus" };
+        const qualityClass = { "Hea esimene AI-katse":"", "Sobib kontrollitud abiks":"checked", "Vajab paremat sisendit":"improve", "Ei sobi praegu selleks otsuseks":"stop" };
+        const legacyOpportunity = (stepNumber) => (Array.isArray(source.opportunities) ? source.opportunities.find((item) => Number(item.step) === Number(stepNumber)) : null);
+        const legacyDetailFor = (stepNumber, key) => source.selectedOpportunity && Number(source.selectedOpportunity.step) === Number(stepNumber) ? source[key] : null;
+        const steps = (Array.isArray(source.steps) ? source.steps : []).map((step) => {
+          const legacy = legacyOpportunity(step.number);
+          return { ...step, aiAssessment:step.aiAssessment || (legacy ? { suitability:legacy.suitability, title:legacy.title, summary:legacy.description, accessNeed:legacy.accessNeed, humanCheck:legacy.humanCheck } : null), qualityAssessment:step.qualityAssessment || legacyDetailFor(step.number, "qualityAssessment"), experiment:step.experiment || legacyDetailFor(step.number, "experiment") };
+        });
+        const prototypes = Array.isArray(source.prototypeIdeas) ? source.prototypeIdeas.filter((idea) => idea && typeof idea === "object") : [];
+        const recommendedPrototypeId = hasText(source.recommendedPrototypeId) ? String(source.recommendedPrototypeId) : "";
+        prototypes.sort((a,b) => Number(String(b.id) === recommendedPrototypeId) - Number(String(a.id) === recommendedPrototypeId));
+        const hasPortfolio = prototypes.length > 0;
+        const dateValue = source.updatedAt || source.generatedAt || source.createdAt;
+        if (dateValue) { const date = new Date(dateValue); document.getElementById("stamp").textContent = Number.isNaN(date.getTime()) ? String(dateValue) : `Viimati uuendatud ${date.toLocaleString("et-EE")}`; }
+        document.title = `${value(source.title)} · Tööprotsessi kaart`;
+        document.getElementById("map-title").textContent = value(source.title, "Tööprotsessi AI-kaart");
+        document.getElementById("lede").textContent = hasPortfolio ? "Prototüübiideed ühendavad tööetapid, AI, kindlad reeglid, süsteemide ligipääsud ja inimese kontrolli üheks katsetatavaks tervikuks. Soovitatud idee on toodud esimesena." : "Igal sammul on esmane AI-sobivuse hinnang. Vanema kaardi lahendusvõrdlus jääb nähtavaks kuni järgmise kinnitatud uuenduseni.";
+        document.getElementById("notice").textContent = value(source.notice, "Kaart põhineb kasutaja kirjeldusel; inimene kontrollib tulemust.");
+        renderProcessContext(source.processContext);
+        if (hasPortfolio) {
+          document.getElementById("prototype-section").hidden = false;
+          document.getElementById("prototype-count").textContent = `${prototypes.length} prototüübiideed`;
+          const prototypeList = document.getElementById("prototype-list");
+          empty(prototypeList); prototypes.forEach((prototype) => prototypeList.append(renderPrototype(prototype)));
+          renderNextStep();
+        }
+        document.getElementById("step-count").textContent = `${steps.length} kaardistatud sammu`;
+        const timeline = document.getElementById("timeline");
+        empty(timeline);
+        if (!steps.length) timeline.append(element("li", "empty", "Kaardistatud samme ei ole."));
+        steps.forEach((step) => timeline.append(renderStep(step)));
+
+        function renderStep(step) {
+          const item = element("li", "step");
+          item.append(element("div", "node", value(step.number, "?")));
+          const card = element("article", "step-card");
+          const assessment = step.aiAssessment && typeof step.aiAssessment === "object" ? step.aiAssessment : { suitability:"ei_sobi", title:"Esmane hinnang puudub", summary:"Selle sammu AI-sobivust tuleb vestluses täpsustada.", accessNeed:"Täpsustada.", humanCheck:"Inimene otsustab järgmise sammu." };
+          const [label, className] = suitability[assessment.suitability] || ["AI esmahinnang", "no"];
+          const head = element("div", "step-head");
+          const heading = element("div");
+          heading.append(element("h3", "", value(step.action)), element("p", "step-meta", `${value(step.actorSystem)} · ${value(step.category)}`));
+          head.append(heading, element("span", `badge ${className}`, label));
+          card.append(head);
+          const dataGrid = element("div", "data-grid");
+          const input = element("div", "data-item"); input.append(element("b", "", "Sisend ja allikas"), document.createTextNode(value(step.inputSource)));
+          const output = element("div", "data-item"); output.append(element("b", "", "Väljund"), document.createTextNode(value(step.informationOutput)));
+          dataGrid.append(input, output); card.append(dataGrid);
+          card.append(renderAssessment(assessment, label, className));
+          const implementations = normalizeImplementationOptions(assessment);
+          if (!hasPortfolio && implementations) card.append(renderImplementationOptions(assessment, implementations));
+          if (hasBenefit(step.benefitHypothesis)) card.append(renderBenefit(step.benefitHypothesis));
+          if (hasQuality(step.qualityAssessment)) card.append(renderQuality(step.qualityAssessment));
+          if (hasExperiment(step.experiment)) card.append(renderExperiment(step.experiment));
+          item.append(card);
+          return item;
+        }
+
+        function mapPath() {
+          if (typeof location === "undefined" || location.protocol !== "file:") return "";
+          try {
+            const decoded = decodeURIComponent(location.pathname);
+            return /^\/[A-Za-z]:/.test(decoded) ? decoded.slice(1) : decoded;
+          } catch (error) { return ""; }
+        }
+
+        function renderNextStep() {
+          const section = document.getElementById("next-step");
+          if (!section) return;
+          const ready = prototypes.some((prototype) => hasPrototypePlan(prototype.prototypePlan));
+          const path = mapPath();
+          const place = path ? `"${path}"` : "\"<selle kaardi täistee>\"";
+          const sentence = ready ? `Ehita selle kaardi põhjal esimene prototüüp: ${place}` : `Jätka selle tööprotsessi kaardiga ja detailiseeri valitud prototüüp: ${place}`;
+          document.getElementById("next-step-heading").textContent = ready ? "Alusta oma esimest ehitust" : "Detailiseeri enne valitud prototüüp";
+          document.getElementById("next-step-text").textContent = ready ? "Prototüübi plaan on valmis. Kopeeri lause Claude'i vestlusesse; ta küsib sinult, millised tööriistad sul käepärast on, ning teeb sinuga väikese turvalise esimese katse näidisandmetel." : "Valitud prototüübil ei ole veel esimese ehituse plaani. Kopeeri lause Claude'i vestlusesse ja ta aitab plaani valmis teha.";
+          document.getElementById("next-step-command").textContent = sentence;
+          if (!path) { const hint = document.getElementById("next-step-hint"); hint.textContent = "Sellest vaatest ei ole kaardifaili täisteed näha. Asenda nurksulgudes olev tekst faili täisteega."; hint.hidden = false; }
+          const button = document.getElementById("next-step-copy");
+          const manual = () => { button.textContent = "Märgi tekst ja kopeeri käsitsi"; };
+          button.addEventListener("click", () => {
+            if (typeof navigator !== "undefined" && navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(sentence).then(() => { button.textContent = "Kopeeritud"; }, manual);
+            else manual();
+          });
+          section.hidden = false;
+        }
+
+        function renderProcessContext(context) {
+          if (!context || typeof context !== "object") return;
+          const rows = [
+            ["EESMÄRK",context.goal],
+            ["KÄIVITAJA",context.trigger],
+            ["LÕPPTULEMUS",context.outcome],
+            ["SAGEDUS VÕI MAHT",context.frequency],
+            ["VALUKOHAD",Array.isArray(context.painPoints) ? context.painPoints.join(" · ") : context.painPoints],
+            ["SÜSTEEMID",Array.isArray(context.systems) ? context.systems.join(" · ") : context.systems],
+            ["ANDMEPIIRANGUD",context.dataConstraints],
+            ["TÖÖRIISTAD KÄE ALL",Array.isArray(context.tools) ? context.tools.join(" · ") : context.tools],
+            ["TÖÖRIISTADE PIIRANGUD",context.toolLimits]
+          ].filter(([,fieldValue]) => hasText(fieldValue));
+          if (!rows.length) return;
+          const section = document.getElementById("process-context");
+          const grid = document.getElementById("process-context-grid");
+          empty(grid); rows.forEach(([label,fieldValue]) => appendDetail(grid,label,fieldValue));
+          section.hidden = false;
+        }
+
+        function renderPrototype(prototype) {
+          const isRecommended = String(prototype.id) === recommendedPrototypeId;
+          const priority = prototype.priorityAssessment && typeof prototype.priorityAssessment === "object" ? prototype.priorityAssessment : {};
+          const visibleStatus = isRecommended ? "alusta_siist" : priority.status === "alusta_siist" ? "jargmine" : priority.status;
+          const card = element("article", `prototype-card${isRecommended ? " recommended" : ""}`);
+          const head = element("div", "prototype-head");
+          head.append(element("h3", "", value(prototype.title, "Prototüübiidee")));
+          const tags = element("div", "prototype-tags");
+          tags.append(element("span", `prototype-badge${visibleStatus === "hiljem" ? " later" : ""}`, priorityStatus[visibleStatus] || "Võrdle"));
+          tags.append(element("span", "type-badge", prototypeType[prototype.type] || "Prototüübiidee"));
+          head.append(tags); card.append(head);
+          if (hasText(prototype.summary)) card.append(element("p", "prototype-summary", prototype.summary));
+          if (hasText(prototype.futureFlow)) card.append(element("p", "future-flow", prototype.futureFlow));
+
+          const details = element("details", "prototype-details");
+          const summary = element("summary");
+          summary.append(element("span", "summary-left", "Vaata ehitatavat visandit")); details.append(summary);
+          const body = element("div", "detail-body");
+          const overview = element("dl", "detail-grid");
+          const stepText = Array.isArray(prototype.stepNumbers) ? prototype.stepNumbers.map((number) => `Samm ${number}`).join(", ") : prototype.stepNumbers;
+          [["PRAEGUNE PROBLEEM",prototype.currentProblem],["SEOTUD SAMMUD",stepText],["KÄIVITAJA",prototype.trigger],["TULEMUS",prototype.outcome],["INIMESE KONTROLL",prototype.humanControl],["ERANDITEE",prototype.exceptionPath],["EELDUSED",prototype.conditions]].filter(([,fieldValue]) => hasText(fieldValue)).forEach(([label,fieldValue]) => appendDetail(overview,label,fieldValue));
+          body.append(overview);
+          if (Array.isArray(prototype.components) && prototype.components.length) body.append(renderComponents(prototype.components));
+          if (Object.keys(priority).length) {
+            const priorityGrid = element("dl", "detail-grid");
+            [["VÄÄRTUS",levelLabel[priority.value] || priority.value],["TEOSTATAVUS",levelLabel[priority.feasibility] || priority.feasibility],["RISK",levelLabel[priority.risk] || priority.risk],["ÕPPIMISVÄÄRTUS",levelLabel[priority.learningValue] || priority.learningValue],["MIKS SEE PRIORITEET",priority.rationale]].filter(([,fieldValue]) => hasText(fieldValue)).forEach(([label,fieldValue]) => appendDetail(priorityGrid,label,fieldValue));
+            body.append(priorityGrid);
+          }
+          details.append(body); card.append(details);
+          if (hasBenefit(prototype.benefitHypothesis)) card.append(renderBenefit(prototype.benefitHypothesis));
+          if (hasPrototypePlan(prototype.prototypePlan)) card.append(renderPrototypePlan(prototype.prototypePlan));
+          return card;
+        }
+
+        function renderComponents(components) {
+          const section = element("section", "components");
+          section.append(element("p", "components-heading", "Kuidas lahendus kokku pannakse"));
+          components.filter((component) => component && typeof component === "object").forEach((component) => {
+            const card = element("article", "component");
+            const head = element("div", "component-head");
+            head.append(element("h4", "", value(component.role, "Komponendi roll")), element("span", `component-badge ${component.kind || ""}`, componentKind[component.kind] || "Komponent"));
+            card.append(head);
+            const list = element("dl", "detail-grid");
+            [["SÜSTEEM",component.system],["VÕIMEKUS",capabilityLabel[component.capability] || component.capability],["TEHNOLOOGIA",component.technology],["VAJALIK ÕIGUS",component.access]].filter(([,fieldValue]) => hasText(fieldValue)).forEach(([label,fieldValue]) => appendDetail(list,label,fieldValue));
+            card.append(list); section.append(card);
+          });
+          return section;
+        }
+
+        function hasPrototypePlan(plan) {
+          return plan && typeof plan === "object" && [plan.hypothesis,plan.scope,plan.firstBuild,plan.successMetric].some(hasText);
+        }
+
+        function renderPrototypePlan(plan) {
+          const details = element("details", "prototype-plan");
+          const summary = element("summary");
+          summary.append(element("span", "summary-left", "Esimene ehitatav prototüüp")); details.append(summary);
+          const body = element("div", "detail-body");
+          if (hasText(plan.hypothesis)) body.append(element("p", "", plan.hypothesis));
+          const list = element("dl", "detail-grid");
+          [["PROTOTÜÜBI PIIR",plan.scope],["TESTANDMED VÕI -KESKKOND",plan.testData],["ESIMENE EHITUS",plan.firstBuild],["INIMESE KONTROLL",plan.humanCheck],["EDUKUSE MÕÕDIK",plan.successMetric],["KATKESTAMISKRITEERIUM",plan.stopCondition],["KÜSIMUS IT-LE VÕI JUHILE",plan.ownerQuestion]].filter(([,fieldValue]) => hasText(fieldValue)).forEach(([label,fieldValue]) => appendDetail(list,label,fieldValue));
+          body.append(list); details.append(body); return details;
+        }
+
+        function renderAssessment(assessment, label, className) {
+          const details = element("details");
+          const summary = element("summary");
+          const left = element("span", "summary-left");
+          left.append(element("span", `badge ${className}`, label), element("span", "summary-label", value(assessment.title, "AI esmahinnang")));
+          summary.append(left); details.append(summary);
+          const body = element("div", "detail-body");
+          body.append(element("p", "", value(assessment.summary)));
+          const list = element("dl", "detail-grid");
+          appendDetail(list, "LIGIPÄÄSUVAJADUS", assessment.accessNeed);
+          appendDetail(list, "INIMESE KONTROLL", assessment.humanCheck);
+          body.append(list); details.append(body);
+          const ideas = assessment.suitability === "ei_sobi" ? [] : Array.isArray(assessment.processChangeIdeas) ? assessment.processChangeIdeas.filter((idea) => idea && typeof idea === "object" && (hasText(idea.title) || hasText(idea.proposedFlow) || hasText(idea.benefit) || hasText(idea.conditions))) : [];
+          if (ideas.length) body.append(renderProcessChangeIdeas(ideas));
+          return details;
+        }
+
+        function normalizeImplementationOptions(assessment) {
+          if (!Array.isArray(assessment.implementationOptions)) return null;
+          const byKind = new Map(assessment.implementationOptions.filter((option) => option && typeof option === "object" && implementationOrder.includes(option.kind)).map((option) => [option.kind, option]));
+          const recommended = implementationOrder.includes(assessment.recommendedApproach) ? assessment.recommendedApproach : null;
+          return implementationOrder.map((kind) => {
+            const option = { kind, status:"ei_kohaldu", rationale:"Selle variandi hinnang vajab täpsustamist.", flow:"Täpsustada.", requirements:"Täpsustada.", humanCheck:"Inimene otsustab järgmise sammu.", constraint:"Täpsustada.", ...byKind.get(kind) };
+            if (kind === recommended) return { ...option, status:"soovitatud" };
+            return option.status === "soovitatud" ? { ...option, status:"voimalik" } : option;
+          });
+        }
+
+        function renderImplementationOptions(assessment, options) {
+          const recommended = implementationOrder.includes(assessment.recommendedApproach) ? assessment.recommendedApproach : null;
+          const recommendedOption = options.find((option) => option.kind === recommended);
+          const details = element("details", "solution-details");
+          const summary = element("summary");
+          const left = element("span", "summary-left");
+          const label = recommendedOption ? implementationKind[recommended] : "Soovitatud tee puudub";
+          const badgeText = recommended === "deterministic" ? "AI asemel mõistlikum" : recommendedOption ? "Soovitatud" : "Hinnata uuesti";
+          left.append(element("span", `solution-badge${recommended === "deterministic" ? " deterministic" : ""}`, badgeText), element("span", "summary-label", `Soovitatud lahendustee: ${label}`));
+          summary.append(left); details.append(summary);
+          const body = element("div", "detail-body");
+          if (recommendedOption) body.append(element("p", "solution-intro", value(recommendedOption.rationale)));
+          else body.append(element("p", "solution-intro", "Selle sammu lahendustee soovitus vajab täpsustamist."));
+          const list = element("div", "solution-options");
+          options.forEach((option) => {
+            const isRecommended = option.kind === recommended;
+            const card = element("article", `solution-option${isRecommended ? " recommended" : ""}${option.status === "ei_soovitata" || option.status === "ei_kohaldu" ? " not-recommended" : ""}`);
+            const head = element("div", "option-head");
+            const title = element("h4", "", implementationKind[option.kind]);
+            head.append(title, element("span", "option-status", implementationStatus[option.status] || value(option.status)));
+            card.append(head);
+            if (option.kind === "deterministic" && hasText(option.technology)) card.append(element("p", "", `Näide: ${option.technology}`));
+            if (hasText(option.rationale)) card.append(element("p", "", option.rationale));
+            const optionDetails = element("dl", "detail-grid");
+            [["TÖÖVOOG",option.flow],["ÕIGUSED JA EELDUSED",option.requirements],["INIMESE KONTROLL",option.humanCheck],["PRAKTILINE PIIRANG",option.constraint]].filter(([,fieldValue]) => hasText(fieldValue)).forEach(([detailLabel,fieldValue]) => appendDetail(optionDetails,detailLabel,fieldValue));
+            card.append(optionDetails); list.append(card);
+          });
+          body.append(list); details.append(body); return details;
+        }
+
+        function renderProcessChangeIdeas(ideas) {
+          const section = element("section", "change-ideas");
+          section.append(element("p", "change-ideas-heading", "Võimalikud muudatused töökorralduses"));
+          ideas.forEach((idea) => {
+            const card = element("article", "change-idea");
+            card.append(element("h4", "", value(idea.title, "Töökorralduse alternatiiv")));
+            if (hasText(idea.proposedFlow)) card.append(element("p", "", idea.proposedFlow));
+            const list = element("dl", "detail-grid");
+            [["KASU",idea.benefit],["EELDUSED JA PIIRANGUD",idea.conditions]].filter(([,fieldValue]) => hasText(fieldValue)).forEach(([label,fieldValue]) => appendDetail(list,label,fieldValue));
+            if (list.childNodes.length) card.append(list);
+            section.append(card);
+          });
+          return section;
+        }
+
+        function approachText(approach) {
+          if (!approach) return "";
+          if (typeof approach !== "object") return String(approach);
+          const title = hasText(approach.title) ? String(approach.title) : "";
+          const flow = hasText(approach.proposedFlow) ? String(approach.proposedFlow) : "";
+          return title && flow ? `${title}: ${flow}` : title || flow;
+        }
+
+        function benefitText(benefit) {
+          if (!benefit) return "";
+          if (typeof benefit !== "object") return String(benefit);
+          if (hasText(benefit.label)) return String(benefit.label);
+          return benefitCategory[benefit.category] || (hasText(benefit.category) ? String(benefit.category) : "");
+        }
+
+        function hasBenefit(hypothesis) {
+          const measurement = hypothesis && typeof hypothesis.measurement === "object" ? hypothesis.measurement : {};
+          return hypothesis && typeof hypothesis === "object" && Boolean(benefitText(hypothesis.primaryBenefit) || hasText(hypothesis.userRationale) || [measurement.metric,measurement.baseline,measurement.target,measurement.sample,measurement.method].some(hasText));
+        }
+
+        function renderBenefit(hypothesis) {
+          const details = element("details", "benefit-details");
+          const summary = element("summary");
+          const left = element("span", "summary-left");
+          left.append(element("span", "benefit-badge", benefitText(hypothesis.primaryBenefit) || "Oodatud kasu"), element("span", "summary-label", "Oodatud kasu ja mõõtmine"));
+          summary.append(left); details.append(summary);
+          const body = element("div", "detail-body");
+          if (hasText(hypothesis.userRationale)) body.append(element("p", "", hypothesis.userRationale));
+          const measurement = hypothesis.measurement && typeof hypothesis.measurement === "object" ? hypothesis.measurement : {};
+          const list = element("dl", "detail-grid");
+          [["HINNATAV LÄHENEMINE",approachText(hypothesis.evaluatedApproach)],["PEAMINE KASU",benefitText(hypothesis.primaryBenefit)],["TEINEJÄRGULINE KASU",benefitText(hypothesis.secondaryBenefit)],["MÕÕDIK",measurement.metric],["LÄHTEPUNKT",measurement.baseline],["SIHT",measurement.target],["VALIM VÕI AEG",measurement.sample],["MÕÕTMISE JA KONTROLLI VIIS",measurement.method]].filter(([,fieldValue]) => hasText(fieldValue)).forEach(([label,fieldValue]) => appendDetail(list,label,fieldValue));
+          body.append(list); details.append(body); return details;
+        }
+
+        function renderQuality(quality) {
+          const details = element("details", "quality-details");
+          const summary = element("summary");
+          const left = element("span", "summary-left");
+          left.append(element("span", `quality-badge ${qualityClass[quality.status] || ""}`, value(quality.status, "Kvaliteedi hinnang")), element("span", "summary-label", "Detailne kvaliteedihinnang"));
+          summary.append(left); details.append(summary);
+          const body = element("div", "detail-body");
+          if (quality.rationale) body.append(element("p", "", quality.rationale));
+          const list = element("dl", "detail-grid");
+          [["HINNATUD LÄHENEMINE",approachText(quality.evaluatedApproach)],["OODATUD VÄLJUND",quality.expectedOutput],["VASTUSEKINDLUS",quality.truthThreshold],["SISENDI VALMISOLEK",quality.inputReadiness],["MALL VÕI HEAD NÄITED",quality.templateReadiness],["KONTROLLIVIIS",quality.verificationMethod],["VEA MÕJU",quality.errorImpact],["TURVALINE AI ROLL",quality.safeAiRole],["SISENDI JÄRGMINE PARANDUS",quality.inputImprovements]].filter(([,fieldValue]) => hasText(fieldValue)).forEach(([label,fieldValue]) => appendDetail(list,label,fieldValue));
+          body.append(list); details.append(body); return details;
+        }
+
+        function renderExperiment(experiment) {
+          const details = element("details", "experiment-details");
+          const summary = element("summary");
+          summary.append(element("span", "summary-left", "Järgmine kontrollitud katse")); details.append(summary);
+          const body = element("div", "detail-body");
+          const list = element("dl", "detail-grid");
+          [["KATSETATAV LÄHENEMINE",approachText(experiment.evaluatedApproach)],["KATSE",experiment.title],["EESMÄRK",experiment.goal],["ESIMENE SAMM",experiment.firstStep],["VAJALIK SISEND",experiment.neededInput],["INIMESE KONTROLL",experiment.humanCheck],["KÜSIMUS IT-LE VÕI JUHILE",experiment.itQuestion]].filter(([,fieldValue]) => hasText(fieldValue)).forEach(([label,fieldValue]) => appendDetail(list,label,fieldValue));
+          body.append(list); details.append(body); return details;
+        }
+
+        function hasQuality(quality) { return quality && typeof quality === "object" && Boolean(quality.status || quality.rationale); }
+        function hasExperiment(experiment) { return experiment && typeof experiment === "object" && Boolean(experiment.title || experiment.goal); }
+      })();
+    </script>
+  </body>
+</html>

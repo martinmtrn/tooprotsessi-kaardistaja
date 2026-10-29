@@ -1,0 +1,305 @@
+{
+  "schemaVersion": 6,
+  "title": "Kliendipäringule vastamine (näidiskaart)",
+  "createdAt": "2026-10-28T12:00:00+02:00",
+  "updatedAt": "2026-10-28T12:00:00+02:00",
+  "notice": "Näidiskaart väljamõeldud ettevõtte Pisipood OÜ kohta. Kõik nimed ja andmed on fiktiivsed; inimene kontrollib tulemust.",
+  "processContext": {
+    "goal": "Klient saab õige ja viisaka vastuse samal tööpäeval ning töötaja ei kopeeri infot mitme faili vahel.",
+    "trigger": "Klient saadab e-posti teel küsimuse tellimuse, tarne või tagastuse kohta.",
+    "outcome": "Kliendile on saadetud kontrollitud vastus ja päring on märgitud lahendatuks.",
+    "frequency": "Umbes 25 päringut päevas, kõige rohkem esmaspäeviti.",
+    "painPoints": [
+      "Tellimuse andmeid otsitakse käsitsi Exceli kliendiregistrist",
+      "Sarnastele küsimustele kirjutatakse vastus iga kord uuesti",
+      "Tagastuse tingimusi kontrollitakse mälu järgi"
+    ],
+    "systems": ["Outlook", "Excel kliendiregister"],
+    "dataConstraints": "Kliendi nime ja tellimuse andmeid ei tohi sisestada avalikesse tööriistadesse; katsetes kasutatakse väljamõeldud näiteid.",
+    "tools": ["Outlook", "Excel", "Claude"],
+    "toolLimits": "Ettevõtte AI-reegel lubab Claude'i kasutada ainult anonüümitud näidetega; töötajatel ei ole paigaldusõigust."
+  },
+  "recommendedPrototypeId": "P1",
+  "prototypeIdeas": [
+    {
+      "id": "P1",
+      "title": "Päringu vastuse mustandi abiline",
+      "type": "sammude_uhendus",
+      "summary": "Kiri, tellimuse otsing, tagastusreegel ja vastuse mustand liiguvad üheks kontrollitavaks vooguks; töötaja kontrollib ja saadab vastuse ise.",
+      "stepNumbers": [1, 2, 3, 4],
+      "currentProblem": "Töötaja kopeerib tellimuse andmed käsitsi registrist ja kirjutab sarnase vastuse iga kord uuesti.",
+      "futureFlow": "Uus kiri → AI tuvastab päringu liigi ja tellimuse numbri → tellimuse lugemine registrist → tagastustähtaja valem → AI vastuse mustand → töötaja kontrollib → mustand Outlooki",
+      "trigger": "Uus kiri jõuab klienditoe postkasti.",
+      "outcome": "Kontrollitud vastuse mustand on Outlookis valmis.",
+      "components": [
+        {
+          "kind": "ai",
+          "role": "Tuvastab päringu liigi ja tellimuse numbri ning koostab vastuse mustandi.",
+          "system": "Claude",
+          "capability": "none",
+          "technology": "Claude vestluses",
+          "access": "Ainult anonüümitud näidiskirjad"
+        },
+        {
+          "kind": "connector",
+          "role": "Loeb tellimuse oleku kliendiregistrist.",
+          "system": "Excel kliendiregister",
+          "capability": "read",
+          "technology": "Excel",
+          "access": "Lugemisõigus registri koopiale"
+        },
+        {
+          "kind": "deterministic",
+          "role": "Arvutab, kas tagastustähtaeg (14 päeva) on täis.",
+          "system": "Excel",
+          "capability": "none",
+          "technology": "Exceli valem",
+          "access": "Ainult tellimuse kuupäev"
+        },
+        {
+          "kind": "human",
+          "role": "Kontrollib mustandi faktid registriga ja saadab vastuse ise.",
+          "system": "Outlook",
+          "capability": "approve",
+          "technology": "Olemasolev Outlook",
+          "access": "Töötaja tavapärane tööõigus"
+        },
+        {
+          "kind": "connector",
+          "role": "Salvestab kinnitatud vastuse mustandina.",
+          "system": "Outlook",
+          "capability": "write",
+          "technology": "Outlooki mustandite kaust",
+          "access": "Ainult mustandite kausta kirjutamine"
+        }
+      ],
+      "humanControl": "Töötaja loeb mustandi läbi ja võrdleb faktid registriga enne saatmist.",
+      "exceptionPath": "Kui tellimust ei leita või päring pole selge, jääb kiri töötajale käsitsi vastamiseks.",
+      "conditions": "Registri koopia kasutamine ja AI kasutus anonüümitud andmetega tuleb IT-ga kokku leppida.",
+      "priorityAssessment": {
+        "value": "korge",
+        "feasibility": "keskmine",
+        "risk": "madal",
+        "learningValue": "korge",
+        "status": "alusta_siist",
+        "rationale": "Kontrollib kõige suurema väärtusega eeldust (kas mustand on kasutatav) ja ei saada midagi ise välja."
+      },
+      "benefitHypothesis": {
+        "primaryBenefit": { "category": "aeg_toomaht", "label": "Aja- või töömahu kokkuhoid" },
+        "secondaryBenefit": { "category": "kvaliteet", "label": "Kvaliteet ja järjepidevus" },
+        "userRationale": "Registris otsimine ja vastuse kirjutamine võtavad praegu suurema osa ühe päringu ajast.",
+        "measurement": {
+          "metric": "Minutid ühe päringu kohta",
+          "baseline": "Mõõta esimeses väikeses katses",
+          "target": "Vähem käsitööd kui praegu",
+          "sample": "10 anonüümitud näidispäringut",
+          "method": "Töötaja mõõdab aega mustandiga ja ilma ning hindab mustandi kasutatavust"
+        }
+      },
+      "prototypePlan": {
+        "hypothesis": "Kas AI koostab kontrollitud faktide põhjal vastuse mustandi, mida töötaja saab kasutada väikeste parandustega?",
+        "scope": "Üks päringuliik (tarne) ja 10 anonüümitud näidiskirja; saatmine ja registrisse kirjutamine jäävad välja.",
+        "testData": "10 väljamõeldud kirja koos väljamõeldud tellimuse ridadega.",
+        "firstBuild": "Korduvkasutatav prompt ja Exceli valem tagastustähtaja kontrolliks.",
+        "humanCheck": "Töötaja hindab iga mustandi: kasutatav, vajab parandust või ei sobi.",
+        "successMetric": "Vähemalt 7 mustandit 10-st on kasutatavad väikeste parandustega.",
+        "stopCondition": "Mustandid sisaldavad korduvalt väljamõeldud fakte või vajavad rohkem aega kui käsitsi vastamine.",
+        "ownerQuestion": "Kas anonüümitud näidiskirju tohib Claude'is kasutada?"
+      }
+    },
+    {
+      "id": "P2",
+      "title": "Vastuse mustandi prompt",
+      "type": "sammu_parendus",
+      "summary": "Ainult vastuse kirjutamise samm: töötaja kleebib kontrollitud faktid ja päringu promptiga vestlusesse ning saab mustandi.",
+      "stepNumbers": [4],
+      "currentProblem": "Sarnastele küsimustele kirjutatakse vastus iga kord uuesti.",
+      "futureFlow": "Päring ja kontrollitud faktid → prompt → AI mustand → töötaja kontroll",
+      "trigger": "Töötaja on faktid kontrollinud.",
+      "outcome": "Vastuse mustand on valmis kopeerimiseks.",
+      "components": [
+        {
+          "kind": "ai",
+          "role": "Koostab vastuse mustandi antud faktide põhjal.",
+          "system": "Claude",
+          "capability": "none",
+          "technology": "Claude vestluses",
+          "access": "Ainult anonüümitud näited"
+        },
+        {
+          "kind": "human",
+          "role": "Kontrollib ja parandab mustandi.",
+          "system": "Outlook",
+          "capability": "approve",
+          "technology": "Olemasolev Outlook",
+          "access": "Töötaja tavapärane tööõigus"
+        }
+      ],
+      "humanControl": "Töötaja loeb mustandi enne kopeerimist läbi.",
+      "exceptionPath": "Ebakindel või ebatavaline päring vastatakse käsitsi.",
+      "conditions": "AI kasutus anonüümitud näidetega on ettevõtte reegliga kooskõlas.",
+      "priorityAssessment": {
+        "value": "keskmine",
+        "feasibility": "korge",
+        "risk": "madal",
+        "learningValue": "keskmine",
+        "status": "jargmine",
+        "rationale": "Kiire ja ohutu, kuid ei vähenda registris otsimise käsitööd."
+      },
+      "benefitHypothesis": null,
+      "prototypePlan": null
+    },
+    {
+      "id": "P3",
+      "title": "Päringuvorm tellimuse numbriga",
+      "type": "protsessi_umberkujundus",
+      "summary": "Klient annab tellimuse numbri ja päringu liigi vormis, nii et kirja lugemise ja otsimise sammud kaovad.",
+      "stepNumbers": [1, 2],
+      "currentProblem": "Töötaja loeb vabateksti seest välja tellimuse numbri ja päringu liigi.",
+      "futureFlow": "Klient täidab vormi → kohustuslikud väljad kontrollitakse → töötaja saab valmis päringu",
+      "trigger": "Klient vajab abi tellimusega.",
+      "outcome": "Töötaja saab struktureeritud päringu ilma kirja lahtiseletamata.",
+      "components": [
+        {
+          "kind": "deterministic",
+          "role": "Kogub kohustuslikud väljad ja kontrollib täielikkust.",
+          "system": "Veebivorm (täpsustada)",
+          "capability": "none",
+          "technology": "Täpsustada",
+          "access": "Ainult vormi väljad"
+        },
+        {
+          "kind": "human",
+          "role": "Vastab struktureeritud päringule.",
+          "system": "Outlook",
+          "capability": "approve",
+          "technology": "Olemasolev Outlook",
+          "access": "Töötaja tavapärane tööõigus"
+        }
+      ],
+      "humanControl": "Töötaja vaatab iga päringu enne vastamist üle.",
+      "exceptionPath": "Vormi mittekasutav klient saab endiselt kirjutada e-posti teel.",
+      "conditions": "Veebivormi tegemine vajab IT või veebihalduri abi.",
+      "priorityAssessment": {
+        "value": "korge",
+        "feasibility": "madal",
+        "risk": "madal",
+        "learningValue": "keskmine",
+        "status": "hiljem",
+        "rationale": "Suur pikaajaline kasu, kuid vajab muudatust kliendi poolel ja IT abi."
+      },
+      "benefitHypothesis": null,
+      "prototypePlan": null
+    }
+  ],
+  "steps": [
+    {
+      "number": 1,
+      "action": "Loen sissetulnud kliendi e-kirja",
+      "actorSystem": "Klienditoe töötaja",
+      "inputSource": "Outlooki postkast: uus kiri",
+      "informationOutput": "Päringu sisu ja tellimuse number",
+      "category": "info otsimine",
+      "aiAssessment": {
+        "suitability": "kohe",
+        "title": "Päringu liigi tuvastamine",
+        "summary": "AI saab kirjast tuvastada päringu liigi (tarne, tagastus, muu) ja tellimuse numbri.",
+        "accessNeed": "Käsitsi antud anonüümitud näidiskiri.",
+        "humanCheck": "Töötaja kontrollib, et liik ja number on õiged."
+      },
+      "benefitHypothesis": null,
+      "qualityAssessment": null,
+      "experiment": null
+    },
+    {
+      "number": 2,
+      "action": "Otsin tellimuse Exceli kliendiregistrist",
+      "actorSystem": "Klienditoe töötaja",
+      "inputSource": "Tellimuse number; Excel kliendiregister",
+      "informationOutput": "Tellimuse olek ja tarneinfo",
+      "category": "info otsimine",
+      "aiAssessment": {
+        "suitability": "lugemine",
+        "title": "Tellimuse otsing registrist",
+        "summary": "Tellimuse olek tuleb registrist lugeda; AI ei tohi seda ise oletada.",
+        "accessNeed": "Lugemisõigus kliendiregistri koopiale.",
+        "humanCheck": "Töötaja kontrollib, et leitud tellimus kuulub õigele kliendile."
+      },
+      "benefitHypothesis": null,
+      "qualityAssessment": null,
+      "experiment": null
+    },
+    {
+      "number": 3,
+      "action": "Kontrollin tagastuse tingimusi",
+      "actorSystem": "Klienditoe töötaja",
+      "inputSource": "Tagastuspoliitika dokument; tellimuse kuupäev",
+      "informationOutput": "Tagastus on lubatud või ei ole",
+      "category": "kontroll",
+      "aiAssessment": {
+        "suitability": "ei_sobi",
+        "title": "Kindel reegel, mitte AI otsus",
+        "summary": "Tagastustähtaeg on kindel reegel (14 päeva); sellele sobib valem, mitte AI hinnang.",
+        "accessNeed": "Tellimuse kuupäev.",
+        "humanCheck": "Töötaja vaatab erandjuhud ise üle."
+      },
+      "benefitHypothesis": null,
+      "qualityAssessment": null,
+      "experiment": null
+    },
+    {
+      "number": 4,
+      "action": "Koostan vastuse kliendile",
+      "actorSystem": "Klienditoe töötaja",
+      "inputSource": "Päringu sisu; tellimuse olek; varasemad sarnased vastused",
+      "informationOutput": "Vastuse mustand",
+      "category": "sisuloome",
+      "aiAssessment": {
+        "suitability": "kohe",
+        "title": "Vastuse mustand",
+        "summary": "AI koostab viisaka vastuse mustandi kontrollitud faktide põhjal.",
+        "accessNeed": "Anonüümitud näidispäringud ja varasemad vastused.",
+        "humanCheck": "Töötaja loeb mustandi läbi ja parandab enne saatmist."
+      },
+      "benefitHypothesis": null,
+      "qualityAssessment": null,
+      "experiment": null
+    },
+    {
+      "number": 5,
+      "action": "Saadan vastuse kliendile",
+      "actorSystem": "Klienditoe töötaja",
+      "inputSource": "Kinnitatud vastus; Outlook",
+      "informationOutput": "Saadetud vastus",
+      "category": "koordineerimine",
+      "aiAssessment": {
+        "suitability": "tegevusoigus",
+        "title": "Saatmine on tagasivõtmatu tegevus",
+        "summary": "Esimeses katses piirdub AI mustandi salvestamisega; saatmise teeb inimene.",
+        "accessNeed": "Outlooki mustandite kausta kirjutusõigus.",
+        "humanCheck": "Töötaja vajutab ise Saada."
+      },
+      "benefitHypothesis": null,
+      "qualityAssessment": null,
+      "experiment": null
+    },
+    {
+      "number": 6,
+      "action": "Märgin päringu lahendatuks",
+      "actorSystem": "Klienditoe töötaja",
+      "inputSource": "Saadetud vastus",
+      "informationOutput": "Staatus Excelis",
+      "category": "andmete sisestamine",
+      "aiAssessment": {
+        "suitability": "tegevusoigus",
+        "title": "Staatuse märkimine",
+        "summary": "Staatuse kirjutamine registrisse vajab kirjutusõigust ja inimese kinnitust; esimeses katses jääb käsitsi tehtavaks.",
+        "accessNeed": "Registri kirjutusõigus (esimeses katses puudub).",
+        "humanCheck": "Töötaja märgib staatuse ise."
+      },
+      "benefitHypothesis": null,
+      "qualityAssessment": null,
+      "experiment": null
+    }
+  ]
+}

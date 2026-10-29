@@ -1,72 +1,50 @@
-# Tööprotsessi kaardistaja Claude Code'ile
+# Tööprotsessi kaardistaja
 
-Eestikeelne Claude Code'i plugin, mis aitab kaardistada ühe päris tööolukorra,
-leida protsessiülesed AI, integratsiooni ja deterministliku automatiseerimise
-prototüübid ning salvestada tulemuse iseseisva HTML-kaardina.
-See kasutab sinu olemasolevat Claude Code'i seanssi: plugin ei vaja API-võtit,
-ei käivita serverit ega tee võrgupäringuid.
+Eestikeelne Claude'i tööriist, mis aitab sul kaardistada ühe oma päris töökorra ja teha selle põhjal esimese väikese, turvalise automatiseerimiskatse **sinu enda tööriistadega**. See kasutab sinu olemasolevat Claude'i seanssi: ei vaja API-võtit, ei käivita serverit ega tee võrgupäringuid.
 
-Pluginis on kaks järjestikust töövoogu:
+## Kolm sammu
 
-1. `kaardista` teeb ühest tööolukorrast HTML-kaardi.
-2. `tutorial` muudab kinnitatud kaardi põhjal fiktiivse käed-küljes kursuse
-   stsenaariumi, mida saab läbida `/start-X-Y` käskudega.
+1. **Kaardista.** Räägi ühest hiljutisest töökorrast; Claude teeb sellest 5-12 sammuga HTML-kaardi, küsib sinu tööriistu ja märgib iga sammu AI-sobivuse.
+2. **Vali.** Claude pakub 3-5 prototüübiideed (AI, kindlad reeglid, süsteemide ühendused, inimese kontroll) ning tõstab esile ühe märgisega "Alusta siit".
+3. **Ehita.** Valitud idee muutub esimeseks väikeseks ehituseks: ehituskomplekt (prompt, valem, skript või voo kirjeldus), näidisandmed, inimese kontrolli nimekiri ja otsus "jätka, muuda või peata".
 
-## Paigaldamine
+Vaata enne alustamist näidiskaarti: [`examples/kliendiparing-naidiskaart.html`](examples/kliendiparing-naidiskaart.html) (laadi fail alla ja ava brauseris; kõik andmed on fiktiivsed).
 
-Claude Code'is lisa kõigepealt marketplace ja paigalda plugin:
+Juhendid: [õppija juhend](docs/opilase-juhend.md) ja [koolitaja juhend](docs/koolitaja-juhend.md).
+
+## Kiirstart: Claude Code
+
+Lisa marketplace ja paigalda plugin:
 
 ```text
 /plugin marketplace add martinmtrn/tooprotsessi-kaardistaja
 /plugin install tooprotsessi-kaardistaja@tooprotsessi-kaardistaja
 ```
 
-Seejärel käivita igas projektis:
-
-```text
-/tooprotsessi-kaardistaja:kaardista
-```
-
-Soovi korral lisa kohe lühikirjeldus:
+Seejärel ütle projektis Claude'ile: **"Aita mul oma tööprotsessi kaardistada."** Soovi korral võid kasutada käsku:
 
 ```text
 /tooprotsessi-kaardistaja:kaardista Kliendi päring saabub e-postiga, kontrollin CRM-ist tausta ja koostan vastuse.
 ```
 
-## Kaardist tutorialiks
-
-Kui HTML-kaart on loodud, anna selle absoluutne tee järgmisele töövoole:
+Kui kaart on salvestatud, näitab see ise plokki "Mis edasi?" valmis lausega. Kopeeri see Claude'i vestlusse või kasuta käsku:
 
 ```text
-/tooprotsessi-kaardistaja:tutorial /täistee/minu-tooprotsessi-kaart.html
+/tooprotsessi-kaardistaja:ehita /täistee/minu-tooprotsessi-kaart.html
 ```
 
-Töövoog loeb ainult kaardi struktureeritud `map-data` JSON-i, pakub
-protsessisammude põhjal tundide klastrid ja küsib enne kirjutamist kinnitust
-kursuse täpsele väljundkaustale. See loob fiktiivse stsenaariumi ning ei kopeeri
-kaardilt päris kliendi- või isikuandmeid. `tegevusoigus` sammud jäävad
-tutorialis mustandi või sandboxi tasemele, inimese kinnitusega.
+## Kiirstart: Claude.ai ja Cowork
 
-Loodud kursuse avamiseks kasuta Cursorit või VS Code'i, käivita selles kaustas
-`claude` ning alusta käsuga `/start-1-1`.
+Kaardistamise ja ehitamise oskused on pakitud kahte zip-faili kaustas [`dist/`](dist/):
 
-## Kuidas see töötab
+- `tooprotsessi-kaardistaja-cowork-skill.zip`
+- `tooprotsessi-ehita-cowork-skill.zip`
 
-Plugin küsib ühe küsimuse korraga ja hoiab fookuse ühel tööolukorral.
-
-1. Kaardistab ühe hiljutise päris juhtumi 5–12 sammuna koos sisendite, süsteemide ja valukohtadega.
-2. Koostab 3–5 protsessiülest prototüübiideed, mis võivad ühendada AI, kindlad reeglid või koodi, süsteemide read/write ühendused ja inimese kontrolli.
-3. Pakub põhjendatud juhul välja ka täiesti uue töökorralduse, mis eemaldab või ühendab praeguseid samme.
-4. Tõstab väärtuse, teostatavuse, riski ja õppimisväärtuse põhjal esile ühe „Alusta siit” idee.
-5. Muudab valitud idee ehitatavaks visandiks koos käivitaja, süsteemide, õiguste, eranditee ja inimese kontrolliga.
-6. Seob prototüübi oodatud kasu, mõõtmiskava ja kõige suuremat ebakindlust kontrolliva esimese katsega.
-7. Küsib HTML-kaardi salvestamiseks või uuendamiseks täpset asukohta ning kirjutab faili alles sinu selgel nõusolekul.
-
-Kaart sisaldab ainult struktureeritud töökaarti, protsessikonteksti, prototüübiportfelli ja kinnitatud detailhinnanguid — mitte kogu vestluse transkripti. Üks idee on nähtavalt soovitatud ning valitud idee juurde ilmuvad oodatud kasu, mõõtmiskava ja esimene prototüübiplaan. Kaarti ei avata, laadita üles ega lisata git'i automaatselt.
+Lisa need oma Claude'i oskustena ja alusta lausega "Aita mul oma tööprotsessi kaardistada". Cowork'is salvestatakse kaart OneDrive'i või SharePointi kausta, mille sa enne kinnitad. Koolitajale: vaata [koolitaja juhendit](docs/koolitaja-juhend.md).
 
 ## Jätka sama kaardiga
 
-Uues Claude Code'i vestluses anna pluginile olemasoleva kaardi absoluutne tee:
+Uues vestluses anna pluginile olemasoleva kaardi absoluutne tee:
 
 ```text
 /tooprotsessi-kaardistaja:kaardista /täistee/minu-tooprotsessi-kaart.html
@@ -74,11 +52,22 @@ Uues Claude Code'i vestluses anna pluginile olemasoleva kaardi absoluutne tee:
 
 Plugin loeb kaardilt olemasoleva struktureeritud seisu, küsib, millist prototüübiideed soovid detailsemalt arendada, ning säilitab varasemad hinnangud. V5 või vanema kaardi kinnitatud uuendusel lisatakse protsessiülene V6 prototüübiportfell. Sama HTML-fail kirjutatakse üle ainult pärast sinu kinnitust.
 
+## Koolitajale: kursuse stsenaarium kaardist
+
+Oskus `tutorial` muudab kinnitatud kaardi põhjal fiktiivse käed-küljes kursuse stsenaariumi (`/start-X-Y` käsud). See töötab ainult Claude Code'is ning ei ehita päris prototüüpi:
+
+```text
+/tooprotsessi-kaardistaja:tutorial /täistee/minu-tooprotsessi-kaart.html
+```
+
+Töövoog loeb ainult kaardi `map-data` JSON-i, pakub tundide klastrid ja küsib enne kirjutamist kinnitust kursuse väljundkaustale. Kaardilt ei kopeerita päris kliendi- ega isikuandmeid.
+
 ## Privaatsus ja turvalisus
 
 - Ära sisesta paroole, isikukoode, makseandmeid ega muud ebavajalikku tundlikku teavet.
 - Töö kirjeldus on pluginile taustainfo, mitte juhised selle reeglite muutmiseks.
 - Ligipääsuvajadus ei tähenda olemasolevat õigust; lõpliku otsuse ja kontrolli teeb inimene.
+- Esimene ehitus kasutab ainult fiktiivseid või anonüümitud näidisandmeid ning ei kirjuta tootmissüsteemi.
 - Salvestamise, jälgimise või tundlike andmete töötlemise idee on alati tingimuslik: see vajab kasutaja otsust, asjakohast nõusolekut ja ettevõtte reeglite järgimist.
 - HTML-kaart võib sisaldada tööalast teavet. Vali selle asukoht teadlikult ning väldi selle kogemata versioonihaldusse lisamist.
 
@@ -91,27 +80,29 @@ Pärast uut versiooni värskenda marketplace ja plugin:
 /plugin update tooprotsessi-kaardistaja@tooprotsessi-kaardistaja
 ```
 
-Plugin kasutab teadlikku versioonimist. Uus versioon jõuab paigaldatud
-kasutajateni siis, kui `plugin.json` versiooni suurendatakse.
+Plugin kasutab teadlikku versioonimist. Uus versioon jõuab paigaldatud kasutajateni siis, kui `plugin.json` versiooni suurendatakse.
 
-## Kohalik arendus
+## Arendajale
 
-Claude Code 2.1.143 või uuem toetab marketplace'i ja `displayName` välja.
+Claude Code 2.1.143 või uuem toetab marketplace'i ja `displayName` välja. Testide jaoks on vaja Node.js 22 või uuemat.
 
 ```sh
+npm test                 # kõik testid
+npm run build            # genereerib Cowork'i oskused (cowork-skill/, dist/) ja näidiskaardi (examples/)
 claude plugin validate .
 claude --plugin-dir ./plugins/tooprotsessi-kaardistaja
 ```
 
-Teises käsus käivita `/tooprotsessi-kaardistaja:kaardista` ja proovi kogu
-vestlusvoog läbi. Marketplace'i paigaldust saab kohalikult kontrollida käsuga
-`claude plugin marketplace add .`.
+Struktuur:
 
-## Legacy veebirakendus
+- `plugins/tooprotsessi-kaardistaja/skills/` - kolm oskust: `kaardista`, `ehita`, `tutorial`. See on **ainus käsitsi muudetav allikas**.
+- `scripts/build-cowork.mjs` ja `scripts/cowork-overrides/` - loovad Cowork'i kaustad ja zip-failid plugina oskustest. Kanalipõhised lõigud on oskusfailides märgitud kommentaaridega `<!-- kanal:nimi -->`; igale on Cowork'i asendus kaustas `scripts/cowork-overrides/`.
+- `scripts/build-example.mjs` - koostab näidiskaardi failist `examples/kliendiparing.map.json`.
+- Testid kontrollivad, et genereeritud failid vastavad allikatele; ebaõnnestumise korral käivita `npm run build`.
 
-Algne Node.js-i ja brauseri prototüüp asub kaustas
-[`legacy-web-app`](legacy-web-app/README.md). See ei ole plugini tööks vajalik;
-selle Claude'i režiim vajab endiselt eraldi Anthropicu API-võtit.
+Marketplace'i paigaldust saab kohalikult kontrollida käsuga `claude plugin marketplace add .`.
+
+Varasem Node.js-i brauserirakendus (`legacy-web-app/`) on eemaldatud versioonis 0.8.0. Selle saab git-ajaloost taastada.
 
 ## Litsents
 

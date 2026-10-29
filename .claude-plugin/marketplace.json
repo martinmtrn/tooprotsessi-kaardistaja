@@ -8,7 +8,7 @@
     {
       "name": "tooprotsessi-kaardistaja",
       "source": "./plugins/tooprotsessi-kaardistaja",
-      "description": "Kaardista üks tööolukord, hinda AI abi sobivust ja loo väike kontrollitud katse.",
+      "description": "Kaardista üks tööolukord, vali prototüüp ja tee oma tööriistadega esimene väike turvaline katse.",
       "category": "productivity",
       "tags": ["eesti", "tooprotsess", "ai-koolitus", "process-mapping"]
     }

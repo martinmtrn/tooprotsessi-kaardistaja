@@ -54,6 +54,8 @@
       .benefit-details { border-color:#b7c8ad; background:#f8fbf5; }.benefit-details[open] summary { background:#edf5e9; }.benefit-badge { display:inline-block; padding:5px 7px; border-radius:2px; color:var(--green); background:var(--green-soft); font:500 8px ui-monospace,monospace; letter-spacing:.04em; text-transform:uppercase; white-space:nowrap; }
       .quality-details { border-color:#d3dfca; background:#f8fbf5; }.experiment-details { border-color:#94b685; background:#eaf4e5; }.experiment-details[open] summary { background:#e2f0dc; }
       .footer-note { margin:28px 0 0 66px; color:var(--muted); font-size:10px; line-height:1.5; }
+      .next-step { margin:0 0 6px; padding:17px; border:2px solid #7ca268; border-radius:5px; background:linear-gradient(145deg,#f1f8ec,#fffefa 58%); }.next-step h2 { margin-bottom:6px; font-size:17px; }.next-step p { margin:0 0 11px; color:#4f5f56; font-size:12px; line-height:1.55; }.next-step .hint { margin:9px 0 0; color:var(--muted); font-size:10px; }.next-step-row { display:flex; align-items:stretch; gap:9px; }.next-step code { flex:1; min-width:0; padding:10px 11px; border-left:3px solid #7ca268; background:#edf5e9; color:#2e493b; font:500 11px/1.55 ui-monospace,monospace; overflow-wrap:anywhere; user-select:all; }.next-step button { flex:0 0 auto; padding:0 14px; border:0; border-radius:3px; color:#fff; background:var(--green); font:700 11px ui-sans-serif,-apple-system,sans-serif; cursor:pointer; }.next-step button:hover { background:#10472f; }
+      @media (max-width:650px) { .next-step-row { flex-direction:column; }.next-step button { padding:10px 14px; } }
       @media (max-width:650px) { .shell { width:min(100% - 28px,620px); }.hero { padding-top:38px; }header { min-height:70px; }.stamp { font-size:10px; }.prototype-grid { grid-template-columns:1fr; }.prototype-card.recommended { grid-column:auto; }.prototype-head { display:block; }.prototype-tags { justify-content:flex-start; margin-top:9px; }.step { grid-template-columns:37px minmax(0,1fr); gap:11px; }.node { width:37px; height:37px; font-size:10px; }.step:not(:last-child)::before { left:18px; top:38px; }.step-card { padding:15px; }.step-head { display:block; }.step-head .badge { margin-top:9px; }.data-grid,.detail-grid { grid-template-columns:1fr; }.footer-note { margin-left:48px; } }
     </style>
   </head>
@@ -62,6 +64,7 @@
       <header><div class="brand"><span class="brand-mark">↗</span><span>Tööprotsessi kaart</span></div><div id="stamp" class="stamp"></div></header>
       <main>
         <section class="hero"><p class="eyebrow">TÖÖPROTSESSI AI-KAART</p><h1 id="map-title">Tööolukord</h1><p id="lede" class="lede"></p><p id="notice" class="notice"></p><section id="process-context" class="process-context" hidden><h2>Mida selle töö juures parandame?</h2><dl id="process-context-grid" class="detail-grid"></dl></section></section>
+        <section id="next-step" class="next-step" aria-labelledby="next-step-heading" hidden><p class="eyebrow">MIS EDASI?</p><h2 id="next-step-heading"></h2><p id="next-step-text"></p><div class="next-step-row"><code id="next-step-command"></code><button id="next-step-copy" type="button">Kopeeri</button></div><p id="next-step-hint" class="hint" hidden></p></section>
         <div class="legend" aria-label="AI sobivuse legend"><span><i class="dot"></i> Saab kohe proovida</span><span><i class="dot read"></i> Vajab lugemisligipääsu</span><span><i class="dot action"></i> Vajab tegevusõigust</span><span><i class="dot no"></i> Ei ole praegu AI-kandidaat</span></div>
         <section id="prototype-section" aria-labelledby="prototype-heading" hidden><div class="section-heading"><div><p class="eyebrow">PROTOTÜÜBIIDEED</p><h2 id="prototype-heading">Üks koht, kust alustada</h2></div><span id="prototype-count" class="count"></span></div><div id="prototype-list" class="prototype-grid"></div></section>
         <section aria-labelledby="process-heading"><div class="section-heading"><div><p class="eyebrow">PROTSESSI SAMMUD</p><h2 id="process-heading">AI esmahinnang igas sammus</h2></div><span id="step-count" class="count"></span></div><ol id="timeline" class="timeline"></ol></section>
@@ -117,6 +120,7 @@
           document.getElementById("prototype-count").textContent = `${prototypes.length} prototüübiideed`;
           const prototypeList = document.getElementById("prototype-list");
           empty(prototypeList); prototypes.forEach((prototype) => prototypeList.append(renderPrototype(prototype)));
+          renderNextStep();
         }
         document.getElementById("step-count").textContent = `${steps.length} kaardistatud sammu`;
         const timeline = document.getElementById("timeline");
@@ -149,6 +153,34 @@
           return item;
         }
 
+        function mapPath() {
+          if (typeof location === "undefined" || location.protocol !== "file:") return "";
+          try {
+            const decoded = decodeURIComponent(location.pathname);
+            return /^\/[A-Za-z]:/.test(decoded) ? decoded.slice(1) : decoded;
+          } catch (error) { return ""; }
+        }
+
+        function renderNextStep() {
+          const section = document.getElementById("next-step");
+          if (!section) return;
+          const ready = prototypes.some((prototype) => hasPrototypePlan(prototype.prototypePlan));
+          const path = mapPath();
+          const place = path ? `"${path}"` : "\"<selle kaardi täistee>\"";
+          const sentence = ready ? `Ehita selle kaardi põhjal esimene prototüüp: ${place}` : `Jätka selle tööprotsessi kaardiga ja detailiseeri valitud prototüüp: ${place}`;
+          document.getElementById("next-step-heading").textContent = ready ? "Alusta oma esimest ehitust" : "Detailiseeri enne valitud prototüüp";
+          document.getElementById("next-step-text").textContent = ready ? "Prototüübi plaan on valmis. Kopeeri lause Claude'i vestlusesse; ta küsib sinult, millised tööriistad sul käepärast on, ning teeb sinuga väikese turvalise esimese katse näidisandmetel." : "Valitud prototüübil ei ole veel esimese ehituse plaani. Kopeeri lause Claude'i vestlusesse ja ta aitab plaani valmis teha.";
+          document.getElementById("next-step-command").textContent = sentence;
+          if (!path) { const hint = document.getElementById("next-step-hint"); hint.textContent = "Sellest vaatest ei ole kaardifaili täisteed näha. Asenda nurksulgudes olev tekst faili täisteega."; hint.hidden = false; }
+          const button = document.getElementById("next-step-copy");
+          const manual = () => { button.textContent = "Märgi tekst ja kopeeri käsitsi"; };
+          button.addEventListener("click", () => {
+            if (typeof navigator !== "undefined" && navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(sentence).then(() => { button.textContent = "Kopeeritud"; }, manual);
+            else manual();
+          });
+          section.hidden = false;
+        }
+
         function renderProcessContext(context) {
           if (!context || typeof context !== "object") return;
           const rows = [
@@ -158,7 +190,9 @@
             ["SAGEDUS VÕI MAHT",context.frequency],
             ["VALUKOHAD",Array.isArray(context.painPoints) ? context.painPoints.join(" · ") : context.painPoints],
             ["SÜSTEEMID",Array.isArray(context.systems) ? context.systems.join(" · ") : context.systems],
-            ["ANDMEPIIRANGUD",context.dataConstraints]
+            ["ANDMEPIIRANGUD",context.dataConstraints],
+            ["TÖÖRIISTAD KÄE ALL",Array.isArray(context.tools) ? context.tools.join(" · ") : context.tools],
+            ["TÖÖRIISTADE PIIRANGUD",context.toolLimits]
           ].filter(([,fieldValue]) => hasText(fieldValue));
           if (!rows.length) return;
           const section = document.getElementById("process-context");

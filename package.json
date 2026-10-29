@@ -1,0 +1,11 @@
+{
+  "name": "tooprotsessi-kaardistaja",
+  "private": true,
+  "type": "module",
+  "description": "Tööprotsessi kaardistaja: plugina arenduse skriptid ja testid.",
+  "engines": { "node": ">=22.13.0" },
+  "scripts": {
+    "test": "node --test plugins/tooprotsessi-kaardistaja/test/*.test.mjs",
+    "build": "node scripts/build-cowork.mjs && node scripts/build-example.mjs"
+  }
+}

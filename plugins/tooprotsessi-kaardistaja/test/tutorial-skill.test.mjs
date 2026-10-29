@@ -16,5 +16,5 @@ test("tutorial töövoog kasutab kaarti turvalise kursusestsenaariumi sisendina"
   assert.match(source, /Ära loo kaustu ega kirjuta faile enne/);
   assert.match(source, /tegevusoigus/);
   assert.match(source, /\/start-X-Y/);
-  assert.equal(plugin.version, "0.7.0");
+  assert.match(plugin.version, /^\d+\.\d+\.\d+$/);
 });

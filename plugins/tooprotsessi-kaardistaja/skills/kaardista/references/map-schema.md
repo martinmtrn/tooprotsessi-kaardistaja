@@ -18,13 +18,17 @@ Loe seda viidet ainult uue kaardi koostamisel, vana kaardi V6 vormingusse viimis
     "frequency": "Sagedus või maht, või Täpsustada",
     "painPoints": ["Ootamine, viga, ümbertöö või käsitsi kopeerimine"],
     "systems": ["Ainult kasutaja nimetatud süsteem või võimekus (täpsustada)"],
-    "dataConstraints": "Tundlikkus, säilitamine või ettevõtte reegel; teadmata juhul Täpsustada"
+    "dataConstraints": "Tundlikkus, säilitamine või ettevõtte reegel; teadmata juhul Täpsustada",
+    "tools": ["Excel", "Outlook", "Claude"],
+    "toolLimits": "Ettevõtte AI-reegel, paigaldusõigus või andmepiirang; teadmata juhul Täpsustada"
   },
   "recommendedPrototypeId": "P1",
   "prototypeIdeas": [],
   "steps": []
 }
 ```
+
+`processContext.tools` ja `processContext.toolLimits` on valikulised ning lisati ilma skeemiversiooni muutmata (V6 jääb V6-ks). `tools` on nimekiri vahenditest, millele kasutajal on päriselt ligipääs ja luba töötada (näiteks Excel, Outlook, Power Automate, Claude). `toolLimits` on vabatekst ettevõtte AI-reegli, paigaldusõiguse ja andmepiirangute kohta. Ära oleta tööriistu: kasuta ainult seda, mida kasutaja ise nimetas, ja märgi teadmata piirang `Täpsustada`. Kaardid ilma nende väljadeta jäävad kehtivaks.
 
 `prototypeIdeas` sisaldab 3–5 kirjet ning täpselt ühe kirje `id` võrdub `recommendedPrototypeId` väärtusega. Selle kirje `priorityAssessment.status` on `alusta_siist`; ühegi teise kirje staatus ei ole `alusta_siist`.
 

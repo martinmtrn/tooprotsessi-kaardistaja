@@ -1,5 +1,15 @@
 # Muudatuste ajalugu
 
+## 0.8.0 - 2026-10-28
+
+- Lisatud oskus `ehita`: viib kaardil valitud prototüübi esimese väikese ehituseni õppija enda tööriistadega. Koostab tööriistade vastavustabeli, ehituskomplekti ja juhendab esimese katse fiktiivsetel või anonüümitud näidisandmetel kuni otsuseni jätka, muuda või peata.
+- `kaardista` küsib enne prototüübiportfelli tööriistad ja nende piirangud (valikulised väljad `processContext.tools` ja `processContext.toolLimits`; skeemiversioon jääb 6), pakub salvestamiseks vaikimisi asukoha ning lõpetab valmis lausega ehitamise alustamiseks.
+- `kaardista` ei ole enam ainult käsitsi käivitatav, nii et sõnastus "aita mul oma tööprotsessi kaardistada" käivitab selle. `tutorial` jääb käsitsi käivitatavaks.
+- HTML-kaart näitab tööriistu ning plokki "Mis edasi?" kopeeritava lausega.
+- Cowork'i ja Claude.ai oskused (`cowork-skill/` ja `dist/`) genereeritakse nüüd plugina oskustest käsuga `npm run build`; testid kontrollivad, et need ei lähe allikatest lahku. Zip-faile on kaks: kaardistamine ja ehitamine.
+- Lisatud fiktiivne näidiskaart `examples/`, õppija ja koolitaja juhend kaustas `docs/`, README on ümber tehtud õppija teekonna järgi, ning juurkausta `package.json` (`npm test`) ja GitHub Actionsi testide töövoog.
+- Eemaldatud `legacy-web-app/`; selle saab git-ajaloost taastada.
+
 ## 0.7.0 — 2026-10-05
 
 - Lisatud `tutorial` töövoog, mis muudab Tööprotsessi kaardistaja HTML-kaardi

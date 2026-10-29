@@ -1,79 +1,9 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
+import { render, source } from "./fixtures/dom-harness.mjs";
+import { assertPortfolioContract } from "./fixtures/portfolio-contract.mjs";
 import { prototypeScenarios } from "./fixtures/prototype-scenarios.mjs";
-
-const template = new URL("../skills/kaardista/tooprotsessi-kaart.html", import.meta.url);
-
-async function source() {
-  return readFile(template, "utf8");
-}
-
-class TestNode {
-  constructor(tagName, className = "", text = "") {
-    this.tagName = tagName;
-    this.className = className;
-    this.textContent = text;
-    this.children = [];
-  }
-
-  append(...nodes) {
-    this.children.push(...nodes);
-  }
-
-  appendChild(node) {
-    this.children.push(node);
-    return node;
-  }
-
-  removeChild(node) {
-    this.children.splice(this.children.indexOf(node), 1);
-  }
-
-  get firstChild() {
-    return this.children[0] ?? null;
-  }
-
-  get childNodes() {
-    return this.children;
-  }
-}
-
-async function render(data) {
-  const html = await source();
-  const scriptStart = html.lastIndexOf("<script>") + "<script>".length;
-  const scriptEnd = html.lastIndexOf("</script>");
-  const nodes = [];
-  const byId = new Map();
-  for (const id of ["map-data", "stamp", "map-title", "lede", "notice", "process-context", "process-context-grid", "prototype-section", "prototype-count", "prototype-list", "step-count", "timeline"]) {
-    const node = new TestNode("div");
-    node.id = id;
-    nodes.push(node);
-    byId.set(id, node);
-  }
-  byId.get("map-data").textContent = JSON.stringify(data);
-  const originalDocument = globalThis.document;
-  globalThis.document = {
-    title: "",
-    getElementById: (id) => byId.get(id),
-    createElement: (tagName) => {
-      const node = new TestNode(tagName);
-      nodes.push(node);
-      return node;
-    },
-    createTextNode: (text) => {
-      const node = new TestNode("#text", "", String(text));
-      nodes.push(node);
-      return node;
-    }
-  };
-  try {
-    new Function(html.slice(scriptStart, scriptEnd))();
-  } finally {
-    globalThis.document = originalDocument;
-  }
-  return nodes;
-}
 
 function assessment(recommendedApproach) {
   return {
@@ -184,19 +114,7 @@ test("V6 portfell peidab sama sammu vana V5 lahendusvõrdluse", async () => {
 
 test("viis stsenaariumifikstuuri vastavad portfelli turva- ja struktuurilepingule", () => {
   assert.equal(prototypeScenarios.length, 5);
-  for (const { id, map } of prototypeScenarios) {
-    assert.ok(map.prototypeIdeas.length >= 3 && map.prototypeIdeas.length <= 5, `${id}: ideede arv`);
-    assert.equal(new Set(map.prototypeIdeas.map((idea) => idea.id)).size, map.prototypeIdeas.length, `${id}: unikaalsed ID-d`);
-    assert.equal(map.prototypeIdeas.filter((idea) => idea.id === map.recommendedPrototypeId).length, 1, `${id}: soovitatud ID`);
-    assert.equal(map.prototypeIdeas.filter((idea) => idea.priorityAssessment.status === "alusta_siist").length, 1, `${id}: üks Alusta siit`);
-    assert.ok(map.prototypeIdeas.some((idea) => idea.components.some((component) => component.kind === "connector")), `${id}: integreeritud idee`);
-    for (const idea of map.prototypeIdeas) {
-      for (const component of idea.components.filter((item) => item.kind === "connector" && item.capability === "write")) {
-        assert.ok(component.system && component.access, `${id}/${idea.id}: write süsteem ja õigus`);
-        assert.ok(idea.humanControl && idea.exceptionPath, `${id}/${idea.id}: write kontroll ja eranditee`);
-      }
-    }
-  }
+  for (const { id, map } of prototypeScenarios) assertPortfolioContract(id, map);
 });
 
 test("stsenaariumid katavad hübriidi, mitme süsteemi ja ümberkujunduse", () => {
@@ -223,4 +141,72 @@ test("valitud prototüübi kasu ja esimene ehitus kuvatakse idee juures", async 
   assert.equal(nodes.filter((node) => node.className === "prototype-plan").length, 1);
   assert.ok(nodes.some((node) => node.textContent === "Valemite ja AI-kommentaari prototüüp"));
   assert.ok(nodes.some((node) => node.textContent === "Aja kokkuhoid"));
+});
+
+function detailedMap() {
+  const map = structuredClone(prototypeScenarios[2].map);
+  map.prototypeIdeas[0].prototypePlan = { hypothesis:"Kas arvutused ja narratiiv töötavad koos?", scope:"Üks näidisaruanne", testData:"Anonüümitud kuunäitajad", firstBuild:"Valemite ja AI-kommentaari prototüüp", humanCheck:"Analüütik võrdleb arvud algallikaga.", successMetric:"Kõik arvud õiged.", stopCondition:"Allikat pole võimalik kontrollida.", ownerQuestion:"Kas näidisandmete kasutamine on lubatud?" };
+  return map;
+}
+
+const byId = (nodes, id) => nodes.find((node) => node.id === id);
+
+test("tööriistad ja piirangud kuvatakse protsessikontekstis ainult siis, kui need on olemas", async () => {
+  const map = structuredClone(prototypeScenarios[0].map);
+  const without = await render(map);
+  map.processContext.tools = ["Excel", "Outlook"];
+  map.processContext.toolLimits = "Ainult ettevõtte heakskiidetud AI.";
+  const withTools = await render(map);
+
+  assert.equal(without.some((node) => node.textContent === "TÖÖRIISTAD KÄE ALL"), false);
+  assert.ok(withTools.some((node) => node.tagName === "dt" && node.textContent === "TÖÖRIISTAD KÄE ALL"));
+  assert.ok(withTools.some((node) => node.tagName === "dd" && node.textContent === "Excel · Outlook"));
+  assert.ok(withTools.some((node) => node.tagName === "dd" && node.textContent === "Ainult ettevõtte heakskiidetud AI."));
+});
+
+test("Mis edasi paneel pakub valmis prototüübi korral ehitamise lause koos faili täisteega", async () => {
+  const nodes = await render(detailedMap(), { location: { protocol: "file:", pathname: "/Users/mari/Minu%20kaart.html" } });
+
+  assert.equal(byId(nodes, "next-step").hidden, false);
+  assert.equal(byId(nodes, "next-step-heading").textContent, "Alusta oma esimest ehitust");
+  assert.equal(byId(nodes, "next-step-command").textContent, 'Ehita selle kaardi põhjal esimene prototüüp: "/Users/mari/Minu kaart.html"');
+  assert.notEqual(byId(nodes, "next-step-hint").hidden, false);
+});
+
+test("Mis edasi paneel palub ilma prototüübiplaanita kaarti enne detailiseerida", async () => {
+  const nodes = await render(structuredClone(prototypeScenarios[0].map), { location: { protocol: "file:", pathname: "/C:/Users/Mari/kaart%20v1.html" } });
+
+  assert.equal(byId(nodes, "next-step-heading").textContent, "Detailiseeri enne valitud prototüüp");
+  assert.equal(byId(nodes, "next-step-command").textContent, 'Jätka selle tööprotsessi kaardiga ja detailiseeri valitud prototüüp: "C:/Users/Mari/kaart v1.html"');
+});
+
+test("Mis edasi paneel kasutab kohahoidjat ja vihjet, kui faili teed ei tea, ning jääb V5 kaardilt peitu", async () => {
+  const noPath = await render(detailedMap());
+  const v5 = await render({ schemaVersion: 5, title: "Vana", steps: [{ number: 1, action: "Tee", aiAssessment: assessment("connector_read") }] });
+
+  assert.match(byId(noPath, "next-step-command").textContent, /<selle kaardi täistee>/);
+  assert.equal(byId(noPath, "next-step-hint").hidden, false);
+  assert.notEqual(byId(v5, "next-step").hidden, false);
+});
+
+test("Kopeeri nupp kirjutab lause lõikelauale ja annab vihje, kui lõikelauda pole", async () => {
+  const nodes = await render(detailedMap(), { location: { protocol: "file:", pathname: "/Users/mari/kaart.html" } });
+  const button = byId(nodes, "next-step-copy");
+  const sentence = byId(nodes, "next-step-command").textContent;
+  const original = Object.getOwnPropertyDescriptor(globalThis, "navigator");
+  const written = [];
+  try {
+    Object.defineProperty(globalThis, "navigator", { value: { clipboard: { writeText: async (text) => { written.push(text); } } }, configurable: true, writable: true });
+    button.listeners.click();
+    await new Promise((resolve) => setImmediate(resolve));
+    assert.deepEqual(written, [sentence]);
+    assert.equal(button.textContent, "Kopeeritud");
+
+    Object.defineProperty(globalThis, "navigator", { value: {}, configurable: true, writable: true });
+    button.listeners.click();
+    assert.equal(button.textContent, "Märgi tekst ja kopeeri käsitsi");
+  } finally {
+    if (original) Object.defineProperty(globalThis, "navigator", original);
+    else delete globalThis.navigator;
+  }
 });
